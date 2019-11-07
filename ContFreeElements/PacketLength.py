@@ -72,7 +72,9 @@ class PacketLength:
 
         Returns:
             float: The cummulative total of packet length means
-        """        
+        """
+
+
         if PacketLength.mean_count == 0:
             PacketLength.grand_total = self.get_mean() - self.get_mean()
         else:
@@ -89,12 +91,10 @@ class PacketLength:
             float: The grand mean of packet lengths.
 
         """
-        PacketLength.grand_mean = -1
-        if PacketLength.mean_count > 1:
-            PacketLength.grand_mean = self._get_grand_total()/(PacketLength.mean_count-1)
+
+        PacketLength.grand_mean = self._get_grand_total()/(PacketLength.mean_count-1)
 
         return PacketLength.grand_mean
-
     def get_median(self) -> float:
         """The median of packet lengths in a network flow.
 
@@ -128,8 +128,8 @@ class PacketLength:
         median = self.get_median()
         dif = 3*(mean - median)
         std = self.get_std()
+        skew = -10
 
-        skew = -10        
         if std != 0:
             skew = dif/std
 
@@ -146,8 +146,8 @@ class PacketLength:
         mode = self.get_mode()
         dif = (mean - mode)
         std = self.get_std()
+        skew2 = -10
 
-        skew2 = -10        
         if std != 0:
             skew2 = dif/std
         
