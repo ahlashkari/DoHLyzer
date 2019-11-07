@@ -28,29 +28,23 @@ class Barks:
 
     Attributes:
         total_bytes_sent (int): A cummalitve value of the bytes sent.
-        sent_count (int): The row number used in total sent method.
         total_bytes_received (int): A cummalitve value of the bytes received.
-        received_count (int):The row number used in  total received method.
         total_forward_header_bytes (int): A cummalitve value of the bytes sent in the forward direction of the flow.
-        forward_count (int): The count of the forward traffic.
         total_reverse_header_bytes (int): A cummalitve value of the bytes sent in the reverse direction of the flow.
-        reverse_count (int): The count of the forward traffic.
+        row (int) : The row number used in total sent method.
 
     """
     total_bytes_sent = 0
-    sent_count = 0
-
     total_bytes_received = 0
-    received_count = 0
 
     total_forward_header_bytes = 0
-    forward_count = 0
-
     total_reverse_header_bytes = 0
-    reverse_count = 0
+
+    row = 0
 
     def __init__(self, feature):
-        self.feature = feature 
+        self.feature = feature
+        Barks.row += 1
 
     def get_bytes_sent(self) -> int:
         """The amount bytes sent from the machine being used to run DoHlyzer.
@@ -89,12 +83,10 @@ class Barks:
         """
 
 
-        if Barks.sent_count == 0:
+        if Barks.row == 1:
             Barks.total_bytes_sent = self.get_bytes_sent() - self.get_bytes_sent()
         else:
             Barks.total_bytes_sent += self.get_bytes_sent()
-
-        Barks.sent_count += 1
 
         return Barks.total_bytes_sent
 
@@ -134,12 +126,10 @@ class Barks:
         """
     
 
-        if Barks.received_count == 0:
+        if Barks.row == 1:
             Barks.total_bytes_received = self.get_bytes_received() - self.get_bytes_received()
         else:
             Barks.total_bytes_received += self.get_bytes_received()
-
-        Barks.received_count += 1
 
         return Barks.total_bytes_received
 
@@ -172,7 +162,10 @@ class Barks:
         forward = self.get_forward_header_bytes()
         duration = PacketTime(self.feature).get_duration()
 
-        rate = forward / duration
+        if duration > 0:
+            rate = forward / duration
+        else:
+            rate = -1
 
         return rate
 
@@ -184,15 +177,15 @@ class Barks:
 
         """
 
-        if Barks.forward_count == 1:
+        if Barks.row == 1:
             Barks.total_forward_header_bytes = self.get_forward_header_bytes() \
                 - self.get_forward_header_bytes()
         else:
             Barks.total_forward_header_bytes += self.get_forward_header_bytes()
 
-        Barks.forward_count += 1
 
         return Barks.total_forward_header_bytes
+
 
     def get_reverse_header_bytes(self) -> int:
         """The amount of header bytes in the header sent in the opposite direction as the flow.
@@ -218,17 +211,11 @@ class Barks:
         Returns:
             int: The total amount of bytes
 
-        """
-        #global total_reverse_header_bytes
-        #global reverse_count
-
-        if Barks.reverse_count == 1:
-            Barks.total_reverse_header_bytes = self.get_reverse_header_bytes() \
-                - self.get_reverse_header_bytes()
+        """        
+        if Barks.row == 1:
+            Barks.total_reverse_header_bytes = self.get_reverse_header_bytes() - self.get_reverse_header_bytes()
         else:
             Barks.total_reverse_header_bytes += self.get_reverse_header_bytes()
-
-        Barks.reverse_count += 1
 
         return Barks.total_reverse_header_bytes
 
@@ -275,8 +262,8 @@ class Barks:
             a possible division by 0.
 
         """
-        reverse_header_bytes = self.get_total_reverse_bytes()
-        forward_header_bytes = self.get_total_forward_bytes()
+        reverse_header_bytes = Barks.total_reverse_header_bytes
+        forward_header_bytes = Barks.total_forward_header_bytes
 
         ratio = -1
         if reverse_header_bytes != 0:
