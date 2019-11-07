@@ -6,6 +6,8 @@ class Flags:
     """
     def __init__(self,feature):
         self.feature = feature 
+        self.flag_dict = {}
+        self.synfin = 0
 
     def _get_flags(self) -> list:
         """The function returns a list of flag values as a sequence.
@@ -21,18 +23,19 @@ class Flags:
         return flag_list
 
 
-    def get_flags(self) -> str:
-        """This function returns the letter values of the sequence of strings
+    #This method is left in but commented out for debbugging purposes
+    # def get_flags(self) -> str:
+    #     """This function returns the letter values of the sequence of strings
 
-        Returns
-            str: a letter sequence
+    #     Returns
+    #         str: a letter sequence
 
-        """
+    #     """
 
-        #Convert the list to a string.
-        flag_str = ' '.join(map(str, self._get_flags()))
+    #     #Convert the list to a string.
+    #     flag_str = ' '.join(map(str, self._get_flags()))
 
-        return flag_str
+    #     return flag_str
 
     def get_flag_total(self) -> int:
         """This feature counts the total number of flags in a flow.
@@ -41,12 +44,70 @@ class Flags:
             int: The total flag count
 
         """
-
         count = 0
-        flags = self._get_flags()
-        for curr_flag in flags:
-            count += 1
 
+        self.flag_dict.update({'NULL' : [0b00000000, 0]})
+        emb_flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR']
+        self.flag_dict.update({emb_flags[i]: [1 << i, 0] for i in range(8)})
+
+        flags = self._get_flags()
+
+        for curr_flag in flags:
+
+            #bitwise comparisons 
+            
+            if curr_flag == (self.flag_dict['NULL'][0]):
+
+                self.flag_dict['NULL'][1] += 1
+
+
+            if self.flag_dict['FIN'][0] == (self.flag_dict['FIN'][0] & curr_flag):
+
+                self.flag_dict['FIN'][1] += 1
+
+
+            if self.flag_dict['SYN'][0] == (self.flag_dict['SYN'][0] & curr_flag):
+
+                self.flag_dict['SYN'][1] += 1
+
+
+            if self.flag_dict['RST'][0] == (self.flag_dict['RST'][0] & curr_flag):
+
+                self.flag_dict['RST'][1] += 1
+
+
+            if self.flag_dict['PSH'][0] == (self.flag_dict['PSH'][0] & curr_flag):
+
+                self.flag_dict['PSH'][1] += 1
+
+
+            if self.flag_dict['ACK'][0] == (self.flag_dict['ACK'][0] & curr_flag):
+
+                self.flag_dict['ACK'][1] += 1
+
+
+            if self.flag_dict['URG'][0] == (self.flag_dict['URG'][0] & curr_flag):
+
+                self.flag_dict['URG'][1] += 1
+
+
+            if self.flag_dict['ECE'][0] == (self.flag_dict['ECE'][0] & curr_flag):
+
+                self.flag_dict['ECE'][1] += 1
+
+
+            if self.flag_dict['CWR'][0] == (self.flag_dict['CWR'][0] & curr_flag):
+
+                self.flag_dict['CWR'][1] += 1
+
+
+            if (self.flag_dict['SYN'][0] | self.flag_dict['FIN'][0]) == \
+                 ((self.flag_dict['SYN'][0] | self.flag_dict['FIN'][0]) & curr_flag):
+
+                self.synfin += 1
+
+
+            count += 1
 
         return count
 
@@ -59,19 +120,7 @@ class Flags:
 
         """
 
-        null = 0b00000000
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as null
-            if (curr_flag == null):
-                count += 1 
-
-        return count    
+        return self.flag_dict['NULL'][1]  
 
 
     #This group of methods represent 
@@ -96,19 +145,8 @@ class Flags:
 
         """
 
-        fin = 0b00000001
 
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & fin) == fin):
-                count += 1 
-
-        return count 
+        return self.flag_dict['FIN'][1] 
 
     def get_syn_count(self) -> int:
         """This feature counts the number of pure SYN flags
@@ -131,19 +169,8 @@ class Flags:
 
         """
 
-        syn = 0b00000010
+        return self.flag_dict['SYN'][1] 
 
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & syn) == syn):
-                count += 1 
-
-        return count 
 
     def get_rst_count(self) -> int:
         """This feature counts the number of pure RST flags
@@ -166,19 +193,7 @@ class Flags:
 
         """
 
-        rst = 0b00000100
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & rst) == rst):
-                count += 1 
-
-        return count 
+        return self.flag_dict['RST'][1] 
 
     def get_psh_count(self) -> int:
         """This feature counts the number of pure PSH flags
@@ -201,19 +216,7 @@ class Flags:
 
         """
 
-        psh = 0b00001000
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & psh) == psh):
-                count += 1 
-
-        return count 
+        return self.flag_dict['PSH'][1] 
 
 
     def get_ack_count(self) -> int:
@@ -237,19 +240,8 @@ class Flags:
 
         """
 
-        ack = 0b00010000
 
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & ack) == ack):
-                count += 1 
-
-        return count 
+        return self.flag_dict['ACK'][1]
 
 
     def get_urg_count(self) -> int:
@@ -273,19 +265,7 @@ class Flags:
 
         """
 
-        urg = 0b00100000
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & urg) == urg):
-                count += 1 
-
-        return count 
+        return self.flag_dict['URG'][1] 
 
 
     def get_ece_count(self) -> int:
@@ -309,19 +289,7 @@ class Flags:
 
         """
 
-        ece = 0b01000000
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & ece) == ece):
-                count += 1 
-
-        return count 
+        return self.flag_dict['ECE'][1] 
 
 
     def get_cwr_count(self) -> int:
@@ -345,19 +313,7 @@ class Flags:
 
         """
 
-        cwr = 0b10000000
-
-        count = 0
-
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as fin
-            if ((curr_flag & cwr) == cwr):
-                count += 1 
-
-        return count 
+        return self.flag_dict['CWR'][1]          
 
 
     #This group of methods represent some common
@@ -428,17 +384,5 @@ class Flags:
             int: The embedded syn/fin count
 
         """
-        count = 0
 
-        synfin = 0b00000011
-
-        #Assigning the current flag to a variable
-        flags = self._get_flags()
-        for curr_flag in flags:
-
-            #returns true if the bits that are in common
-            #are the same as synfin
-            if ((synfin & curr_flag) == synfin):
-                count += 1 
-
-        return count    
+        return self.synfin
