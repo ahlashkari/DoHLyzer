@@ -17,24 +17,24 @@ class FlowList:
         local_mac = get_if_hwaddr(interface)
         self.flows = {}
 
-        for p in packets:
-            if p.src == local_mac:
-                if p.dst == local_mac and PacketFlowKey.get_packet_flow_key(p, PacketDirection.REVERSE):
+        for packet in packets:
+            if packet.src == local_mac:
+                if packet.dst == local_mac and PacketFlowKey.get_packet_flow_key(packet, PacketDirection.REVERSE):
                     direction = PacketDirection.REVERSE
                 else:
                     direction = PacketDirection.FORWARD
-            elif p.dst == local_mac:
+            elif packet.dst == local_mac:
                 direction = PacketDirection.REVERSE
             else:
                 direction = PacketDirection.FORWARD
 
-            packet_flow_key = PacketFlowKey.get_packet_flow_key(p, direction)
+            packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
             flow = self.flows.get(packet_flow_key)
             if flow is None:
-                flow = Features(p, direction, interface)
+                flow = Features(packet, direction, interface)
                 self.flows[packet_flow_key] = flow
 
-            flow.add_packet(p, direction)
+            flow.add_packet(packet, direction)
 
     def get_flows(self) -> list:
         return self.flows.values()
