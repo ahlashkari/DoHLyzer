@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-#internal imports
-from ContElements.Context.PacketDirection import PacketDirection
-from ContElements.Context.PacketFlowKey import PacketFlowKey
 
 #For math stuff
 import numpy
@@ -11,14 +8,18 @@ from scipy import stats as stat
 #type hinting imports
 from typing import List, Any
 
+#internal imports
+from ContElements.Context.PacketDirection import PacketDirection
+from ContElements.Context.PacketFlowKey import PacketFlowKey
+
 
 #time difference between packets of foward and reverse flows
 class TimeDiff:
     """A summary of features based on the time difference between an outgoing packet and the following response.
 
     Attributes:
-        mean_count (int): The number of means
-        grand_total (flaot): The cummulation of means
+        mean_count (int): The number of means.
+        grand_total (flaot): The cummulation of means.
 
 
     """
@@ -30,7 +31,7 @@ class TimeDiff:
         self.feature = feature
 
     def get_dif(self) -> List[float]:
-        """Gets the time difference in seconds between an outgoing packet and the following response packet.
+        """Calculates the time difference in seconds between an outgoing packet and the following response packet.
 
         Returns:
             List[float]: A list of time differences.
@@ -47,7 +48,7 @@ class TimeDiff:
         return time_diff
 
     def get_var(self) -> float:
-        """Gets the variation of the list of time differences.
+        """Calculates the variation of the list of time differences.
 
         Returns:
             float: The variation in time differences.
@@ -60,7 +61,7 @@ class TimeDiff:
         return var
 
     def get_mean(self) -> float:
-        """Gets the mean of the list of time differences.
+        """Calculates the mean of the list of time differences.
 
         Returns:
             float: The mean in time differences.
@@ -73,7 +74,7 @@ class TimeDiff:
         return mean
 
     def _get_grand_total(self) -> float:
-        """grand total of time differences in a network flow.
+        """Calculates grand total of time differences in a network flow.
 
         Returns:
             float: The grand total of time differences in a network flow
@@ -91,7 +92,7 @@ class TimeDiff:
         return TimeDiff.grand_total
 
     def get_grand_mean(self) -> float:
-        """The mean of means of time differences in a network flow.
+        """Calculates the cummulative mean of time differences in a network flow.
 
         Returns:
             float: The grand mean of the time differences
@@ -106,7 +107,7 @@ class TimeDiff:
         return TimeDiff.grand_mean
 
     def get_median(self) -> float:
-        """Gets the median of the list of time differences
+        """Calculates the median of the list of time differences
 
         Returns:
             float: The median in time differences.
@@ -115,7 +116,7 @@ class TimeDiff:
         return numpy.median(self.get_dif())
 
     def get_mode(self) -> float:
-        """Gets the mode of the of time differences
+        """Calculates the mode of the of time differences
 
         Returns:
             float: The mode in time differences.
@@ -127,8 +128,10 @@ class TimeDiff:
 
         return mode
     def get_skew(self) -> float:
-        """Gets the skew of the of time differences. 
-        Using a simple skew formula using the mean and the median
+        """Calculates the skew of the of time differences.
+
+        Note: 
+            Uses a simple skew formula using the mean and the median.
 
         Returns:
             float: The skew in time differences.
@@ -145,8 +148,10 @@ class TimeDiff:
         return skew
 
     def get_skew2(self) -> float:
-        """Gets the skew of the of time differences. 
-        Using a simple skew formula using the mean and the mode
+        """Calculates the skew of the of time differences.
+
+        Note: 
+            Uses a simple skew formula using the mean and the mode
 
         Returns:
             float: The skew in time differences.
@@ -163,7 +168,7 @@ class TimeDiff:
         return skew2
 
     def get_std(self) -> float:
-        """Gets the standard deviation of the list of time differences
+        """Calculates the standard deviation of the list of time differences
 
         Returns:
             float: The standard deviation in time differences.
@@ -176,11 +181,14 @@ class TimeDiff:
         return std
 
     def get_cov(self) -> float:
-        """Gets the coefficient of variance of the list of time differences
+        """Calculates the coefficient of variance of the list of time differences
+
+        Note:
+            return -1 if division by 0.
 
         Returns:
             float: The coefficient of variance in time differences.
-            return -1 if division by 0.
+
         """
         cov = -1
         if self.get_mean() != 0:

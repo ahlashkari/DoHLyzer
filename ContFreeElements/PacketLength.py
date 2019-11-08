@@ -34,7 +34,20 @@ class PacketLength:
         for packet, _ in self.feature.packets:
             packet_lengths.append(len(packet))
 
-        return packet_lengths 
+        return packet_lengths
+
+    def get_first_packet_length(self) -> int:
+        """Obtains the size of the first packet.
+
+        Returns:
+            int: The size of the first packet
+
+        """
+
+        feat = self.feature
+
+        return [len(packet) for packet, _ in  \
+            feat.packets if packet.src][0]
 
     def get_var(self) -> float:
         """The variation of packet lengths in a network Feature.
@@ -71,7 +84,7 @@ class PacketLength:
         """The cummulative total of the packet length means in a network flow.
 
         Returns:
-            float: The cummulative total of packet length means
+            float: The cummulative total of packet length means.
         """
 
 

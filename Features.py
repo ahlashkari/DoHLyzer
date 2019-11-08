@@ -15,6 +15,7 @@ from scapy.layers.l2 import Ether
 
 #internal imports
 from ContElements.Barks import Barks
+from ContElements.TimeDiff import TimeDiff
 
 from ContElements.Context.PacketDirection import PacketDirection
 from ContElements.Context.PacketFlowKey import PacketFlowKey
@@ -23,7 +24,7 @@ from ContFreeElements.Flags import Flags
 from ContFreeElements.IpBased import IpBased
 from ContFreeElements.PacketLength import PacketLength
 from ContFreeElements.PacketTime import PacketTime
-from ContElements.TimeDiff import TimeDiff
+
 
 
 warnings.filterwarnings("ignore")
@@ -95,7 +96,9 @@ class Features:
                 'ReverseHeaderRate' : barks.get_reverse_rate(),
                 'TotalReverseHeaderBytes' : barks.get_total_reverse_bytes(), 
                 'HeaderInOutRatio' : barks.get_header_in_out_ratio(),
-                'TotalHeaderInOutRatio' : barks.get_total_header_in_out_ratio(), 
+                'TotalHeaderInOutRatio' : barks.get_total_header_in_out_ratio(),
+                'InitialTTL' : barks.get_initial_ttl(),
+                'FirstPacketSize' : packet_length.get_first_packet_length(),
                 'PacketLengthVariance' : packet_length.get_var(),
                 'PacketLengthStandardDeviation' : packet_length.get_std(), 
                 'PacketLengthMean' : packet_length.get_mean(),

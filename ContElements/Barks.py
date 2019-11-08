@@ -31,12 +31,13 @@ class Barks:
         total_bytes_received (int): A cummalitve value of the bytes received.
         total_forward_header_bytes (int): A cummalitve value of the bytes sent in the forward direction of the flow.
         total_reverse_header_bytes (int): A cummalitve value of the bytes sent in the reverse direction of the flow.
-        row (int) : The row number used in total sent method.
+        row (int) : The row number.
 
     """
-    total_bytes_sent = 0
+    
     total_bytes_received = 0
-
+    total_bytes_sent = 0
+    
     total_forward_header_bytes = 0
     total_reverse_header_bytes = 0
 
@@ -47,7 +48,7 @@ class Barks:
         Barks.row += 1
 
     def get_bytes_sent(self) -> int:
-        """The amount bytes sent from the machine being used to run DoHlyzer.
+        """Calculates the amount bytes sent from the machine being used to run DoHlyzer.
 
         Returns:
             int: The amount of bytes.
@@ -69,20 +70,21 @@ class Barks:
         sent = self.get_bytes_sent()
         duration = PacketTime(self.feature).get_duration()
 
-        rate = sent / duration
+        if duration == 0:
+            rate = -1
+        else:
+            rate = sent / duration
 
         return rate
 
 
     def get_total_bytes_sent(self) -> int:
-        """The total bytes sent in the sniffing session.
+        """Calculates the cummalative total bytes sent.
 
         Returns:
             int: The total amount of bytes
 
-        """
-
-
+        """        
         if Barks.row == 1:
             Barks.total_bytes_sent = self.get_bytes_sent() - self.get_bytes_sent()
         else:
@@ -91,7 +93,7 @@ class Barks:
         return Barks.total_bytes_sent
 
     def get_bytes_received(self) -> int:
-        """The amount bytes sent to the machine being used to run this DoHlyzer.
+        """Calculates the amount bytes received.
         
         Returns:
             int: The amount of bytes.
@@ -113,19 +115,20 @@ class Barks:
         received = self.get_bytes_received()
         duration = PacketTime(self.feature).get_duration()
 
-        rate = received / duration
+        if duration == 0:
+            rate = -1
+        else:
+            rate = received / duration
 
         return rate
 
     def get_total_bytes_received(self) -> int:
-        """The total bytes received in the sniffing session.
+        """Calculates the total bytes received in the sniffing session.
 
         Returns:
             int: The total amount of bytes
 
-        """
-    
-
+        """    
         if Barks.row == 1:
             Barks.total_bytes_received = self.get_bytes_received() - self.get_bytes_received()
         else:
@@ -134,7 +137,7 @@ class Barks:
         return Barks.total_bytes_received
 
     def get_forward_header_bytes(self) -> int:
-        """The amount of header bytes in the header sent in the same direction as the flow.
+        """Calculates the amount of header bytes in the header sent in the same direction as the flow.
         
         Returns:
             int: The amount of bytes.
@@ -170,7 +173,7 @@ class Barks:
         return rate
 
     def get_total_forward_bytes(self) -> int:
-        """The total bytes in the header going forward.
+        """Calculates the total bytes in the header going forward.
 
         Returns:
             int: The total amount of bytes
@@ -188,7 +191,7 @@ class Barks:
 
 
     def get_reverse_header_bytes(self) -> int:
-        """The amount of header bytes in the header sent in the opposite direction as the flow.
+        """Calculates the amount of header bytes in the header sent in the opposite direction as the flow.
         
         Returns:
             int: The amount of bytes.
@@ -206,7 +209,7 @@ class Barks:
             in packets if direction == PacketDirection.REVERSE)
 
     def get_total_reverse_bytes(self) -> int:
-        """The total reverse header bytes
+        """Calculates the total reverse header bytes
 
         Returns:
             int: The total amount of bytes
@@ -230,7 +233,10 @@ class Barks:
         reverse = self.get_reverse_header_bytes()
         duration = PacketTime(self.feature).get_duration()
 
-        rate = reverse / duration
+        if duration == 0:
+            rate = -1
+        else:
+            rate = reverse / duration
 
         return rate
 
@@ -270,3 +276,15 @@ class Barks:
             ratio = forward_header_bytes/reverse_header_bytes
         
         return ratio
+
+    def get_initial_ttl(self) -> int:
+        """Obtains the initial time-to-live value.
+
+        Returns:
+            int: The initial ttl value in seconds.
+
+        """
+        feat = self.feature
+        return [packet['IP'].ttl for packet, _ in  \
+            feat.packets][0]
+
