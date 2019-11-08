@@ -127,6 +127,7 @@ class Features:
                 'FlowDifferenceTimeSkewFromMode' : time.get_skew2(), 
                 'FlowDifferenceTimeCoefficientofVariation' : time.get_cov(), 
                 'IsGoogle' : ip.is_google(),
+                'IsMalwareIP' : ip.is_bad(),
                 'FlagTotal' : flags.get_flag_total(),
                 'NullFlagCount' : flags.get_null_count(),
                 'PureFINCount' : flags.get_fin_count(),

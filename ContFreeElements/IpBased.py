@@ -5,6 +5,9 @@ class IpBased:
     def is_google(self) -> bool:
         """Determines if an IP address is a known google IPv4 address
 
+        Note:
+            This is intended as a sort of non-comprehensive white list.
+
         Returns:
             bool: True if it is a google IPv4.
             False if otherwise.
@@ -17,4 +20,25 @@ class IpBased:
         or ('74.125.0.0' <= self.ip_addr <= '74.125.255.255') \
         or('209.85.128.0' <= self.ip_addr <= '209.85.255.255') \
         or ('216.239.32.0' <= self.ip_addr <= '216.239.63.255')
+
         return is_google
+
+    def is_bad(self) -> bool:
+        """Determines if an IP address is a known malicious IPv4 address
+
+        Note:
+            This is intended as a sort of non-comprehensive white list.
+            Addresses used are from https://unit42.paloaltonetworks.com/rockein-the-netflow/
+
+        Returns:
+            bool: True if it is a malicious IPv4.
+            False if otherwise.
+
+        """
+        ip_a = self.ip_addr
+        is_bad = ('43.224.225.220' == ip_a) or ('67.21.64.34' == ip_a) or\
+                 ('103.52.216.35' == ip_a) or ('104.248.53.213' == ip_a) or \
+                 ('104.238.151.101' == ip_a) or ('198.204.231.250' == ip_a) or \
+                 ('205.185.122.229' == ip_a)
+
+        return is_bad
