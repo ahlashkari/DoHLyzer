@@ -31,11 +31,13 @@ if __name__ == '__main__':
 
     # user_choice = options[user_entry]
 
-    # print("Capturing packets from `{}` interface...".format(user_choice))
+    #print("Capturing packets from `{}` interface...".format(user_choice))
 
     #set count to 0 to get data continuously until this program is interupted 
     #in the terminal with ctrl-c
 
+    print("Capturing packets from enp0s3 interface...")
+    
     packets = sniff(iface='enp0s3', filter='port 443', count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
 
     flow_list = FlowList("enp0s3", packets)
