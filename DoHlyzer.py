@@ -14,24 +14,31 @@ from scapy.layers.l2 import Ether
 SNIFFED_PACKET_COUNT = 5000
 filename = 'output-https2.csv'
 
+
+
 if __name__ == '__main__':
-    options = get_if_list()
 
-    print("Please choose which interface you wish to analyze:")
-    for i, interface in enumerate(options):
-        print("({}) {}".format(i + 1, interface))
+    ## Below is the commentted out functionality to choose a different interface
+    ## to capture packets
+    ## enp0s3 is simply the one that has worked best so far.
+    #options = get_if_list()
 
-    user_entry = int(input()) - 1
+    # print("Please choose which interface you wish to analyze:")
+    # for i, interface in enumerate(options):
+    #     print("({}) {}".format(i + 1, interface))
 
-    user_choice = options[user_entry]
+    # user_entry = int(input()) - 1
 
-    print("Capturing packets from `{}` interface...".format(user_choice))
+    # user_choice = options[user_entry]
+
+    # print("Capturing packets from `{}` interface...".format(user_choice))
 
     #set count to 0 to get data continuously until this program is interupted 
     #in the terminal with ctrl-c
-    packets = sniff(iface=user_choice, filter='port 443', count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
 
-    flow_list = FlowList(user_choice, packets)
+    packets = sniff(iface='enp0s3', filter='port 443', count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
+
+    flow_list = FlowList("enp0s3", packets)
 
     with open(filename, 'w') as output:
 
