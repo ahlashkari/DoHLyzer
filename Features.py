@@ -80,7 +80,8 @@ class Features:
         return {
                 'SourceIP' : self.src_ip,
                 'DestinationIP' : self.dest_ip, 
-                'SourcePort' : self.src_port, 
+                'SourcePort' : self.src_port,
+                'TimeStamp' : packet_time.get_time_stamp(),
                 'Duration' : packet_time.get_duration(),
                 'DurationTotal' : packet_time.get_duration_total(),
                 'FlowBytesSent' : barks.get_bytes_sent(),

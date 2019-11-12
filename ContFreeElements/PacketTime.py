@@ -3,6 +3,8 @@
 #for type hinting
 from typing import List
 
+from datetime import datetime
+
 #For math stuff
 import numpy
 from scipy import stats as stat
@@ -35,6 +37,17 @@ class PacketTime:
         """
         packet_times = [self.feature.packet.time for self.feature.packet, _ in self.feature.packets]
         return packet_times
+
+    def get_time_stamp(self):
+        """Returns the date and time in a human readeable format.
+
+        Return (str): 
+            String of Date and time.
+
+        """
+        time = self._get_packet_times()[0]
+        date_time = datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+        return date_time
 
     def get_duration(self) -> float:
         """Calculates the duration of a network flow.
