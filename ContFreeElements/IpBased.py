@@ -1,6 +1,6 @@
 class IpBased: 
     def __init__(self, feature):
-        self.ip_addr = feature._get_dest_ip()
+        self.ip_addr = feature.dest_ip
 
     def is_google(self) -> bool:
         """Determines if an IP address is a known google IPv4 address

@@ -3,6 +3,7 @@
 #for type hinting
 from typing import List
 
+from decimal import DecimalException
 from datetime import datetime
 
 #For math stuff
@@ -16,17 +17,18 @@ class PacketTime:
 
     Attributes:
         count (int): The row number.
-        mean_count (int): The number of means.
+        count (int): The number of means.
         grand_total(float): The cummulative total of the means.
         duration_total(float): The cummulative total of the durations.
 
     """        
-    mean_count = 0
+    count = 0
     grand_total = 0
     duration_total = 0
 
     def __init__(self, feature):
         self.feature = feature
+        PacketTime.count += 1
 
     def _get_packet_times(self) -> list:
         """Gets a list of the times of the packets on a flow
@@ -60,15 +62,15 @@ class PacketTime:
         return max(self._get_packet_times()) - min(self._get_packet_times())
 
     def get_duration_total(self) -> float:
-        """Addes together all the duration values on a given run.
+        """Adds together all the duration values on a given run.
 
         Returns:
             The total Duration
 
         """
 
-        if PacketTime.mean_count == 0:
-            PacketTime.duration_total = self.get_duration() - self.get_duration()
+        if PacketTime.count == 1:
+            PacketTime.duration_total = 0
         else:
             PacketTime.duration_total += self.get_duration()
 
@@ -113,12 +115,10 @@ class PacketTime:
 
         """
 
-        if PacketTime.mean_count == 0:
-            PacketTime.grand_total = self.get_mean() - self.get_mean()
+        if PacketTime.count == 1:
+            PacketTime.grand_total = 0
         else:
             PacketTime.grand_total += self.get_mean()
-
-        PacketTime.mean_count += 1
 
         return PacketTime.grand_total
 
@@ -130,8 +130,10 @@ class PacketTime:
 
 
         """
-
-        PacketTime.grand_mean = self._get_grand_total()/(PacketTime.mean_count-1)
+        try:
+            PacketTime.grand_mean = self._get_grand_total()/(PacketTime.count-1)
+        except (DecimalException):
+            PacketTime.grand_mean = -1
 
         return PacketTime.grand_mean
 
@@ -184,12 +186,12 @@ class PacketTime:
         """
         mean = self.get_mean()
         mode = self.get_mode()
-        dif = (mean - mode)
+        dif = (float(mean) - mode)
         std = self.get_std()
         skew2 = -10
 
         if std != 0:
-            skew2 = dif/std
+            skew2 = dif/float(std)
         
         return skew2
 

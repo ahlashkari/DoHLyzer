@@ -8,7 +8,11 @@ from ContElements.Context.PacketDirection import PacketDirection
 
 class PacketFlowKey:
     def get_packet_flow_key(packet: Any, direction: Enum) -> Any:
-        """Extracts the data from packets into more user readable information.
+        """Creates a key signature for a packet.
+
+        Summary:
+            Creates a key signature for a packet so it can be
+            assigned to a flow.
 
         Args:
             packet: A network packet
@@ -23,9 +27,10 @@ class PacketFlowKey:
 
         """
 
-        #Try adding raw data here
         if packet.proto == 6:
             protocol = 'TCP'
+        elif packet.proto == 17:
+            protocol = 'UDP'
         else:
             raise Exception('Only TCP protocols are supported.')
 
@@ -33,14 +38,11 @@ class PacketFlowKey:
             dest_ip = packet['IP'].dst
             src_ip = packet['IP'].src 
             src_port = packet[protocol].sport
-            #flags = packet['TCP'].flags
+            dest_port = packet[protocol].dport
         else:
             dest_ip = packet['IP'].src
             src_ip = packet['IP'].dst
             src_port = packet[protocol].dport
-            #flags = packet['TCP'].flags
+            dest_port = packet[protocol].sport
 
-        #TCP window measured usually in bytes
-        #window = packet['TCP'].window
-
-        return dest_ip, src_ip, src_port
+        return dest_ip, src_ip, src_port, dest_port

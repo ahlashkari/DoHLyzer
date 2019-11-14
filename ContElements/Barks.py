@@ -86,7 +86,7 @@ class Barks:
 
         """        
         if Barks.row == 1:
-            Barks.total_bytes_sent = self.get_bytes_sent() - self.get_bytes_sent()
+            Barks.total_bytes_sent = 0
         else:
             Barks.total_bytes_sent += self.get_bytes_sent()
 
@@ -130,7 +130,7 @@ class Barks:
 
         """    
         if Barks.row == 1:
-            Barks.total_bytes_received = self.get_bytes_received() - self.get_bytes_received()
+            Barks.total_bytes_received = 0
         else:
             Barks.total_bytes_received += self.get_bytes_received()
 
@@ -181,8 +181,7 @@ class Barks:
         """
 
         if Barks.row == 1:
-            Barks.total_forward_header_bytes = self.get_forward_header_bytes() \
-                - self.get_forward_header_bytes()
+            Barks.total_forward_header_bytes = 0
         else:
             Barks.total_forward_header_bytes += self.get_forward_header_bytes()
 
@@ -216,7 +215,7 @@ class Barks:
 
         """        
         if Barks.row == 1:
-            Barks.total_reverse_header_bytes = self.get_reverse_header_bytes() - self.get_reverse_header_bytes()
+            Barks.total_reverse_header_bytes = 0
         else:
             Barks.total_reverse_header_bytes += self.get_reverse_header_bytes()
 

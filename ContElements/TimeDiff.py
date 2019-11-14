@@ -19,7 +19,7 @@ class TimeDiff:
 
     Attributes:
         mean_count (int): The number of means.
-        grand_total (flaot): The cummulation of means.
+        grand_total (float): The cummulation of means.
 
 
     """
@@ -159,11 +159,11 @@ class TimeDiff:
         """
         mean = self.get_mean()
         mode = self.get_mode()
-        dif = (mean - mode)
+        dif = (float(mean) - mode)
         std = self.get_std()
         skew2 = -10
         if std !=0:
-            skew2 = dif/std
+            skew2 = dif/float(std)
 
         return skew2
 
