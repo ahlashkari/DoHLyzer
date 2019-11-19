@@ -22,7 +22,6 @@ class FlowList:
     def __init__(self, interface, packets) -> None:
         # local_mac = get_if_hwaddr(interface)
         self.flows = {}
-        dbranch = []
         for packet in packets:
             
             expire_updated = 0.2
@@ -40,7 +39,6 @@ class FlowList:
                 direction = PacketDirection.REVERSE
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 flow = self.flows.get((packet_flow_key, count))
-                dbranch.append("A")
                 
                 # self._expired(packet, flow, packet_flow_key, 2)
                           
@@ -51,14 +49,12 @@ class FlowList:
                     flow = Flow(packet, direction, interface)
                     packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                     self.flows[(packet_flow_key, count)] = flow
-                    dbranch.append("B")
 
                 elif (packet.time - flow.latest_timestamp) > expire_updated:
 
                     #if the packet exists in the flow but the packet is sent
                     #after too much of a delay than it is a part of a new flow.
                     expired = expire_updated
-                    dbranch.append("C")
                     while (packet.time - flow.latest_timestamp) > expired:
 
                         count += 1
@@ -77,7 +73,6 @@ class FlowList:
             elif (packet.time - flow.latest_timestamp) > expire_updated:
 
                 expired = expire_updated
-                dbranch.append("E")
                 while (packet.time - flow.latest_timestamp) > expired:
 
                     count += 1
@@ -88,7 +83,6 @@ class FlowList:
                     flow = self.flows.get((packet_flow_key, count))
 
                     if flow is None:
-                        dbranch.append("F")
                         flow = Flow(packet, direction, interface)
                         self.flows[(packet_flow_key, count)] = flow
                         break
