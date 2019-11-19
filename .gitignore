@@ -2,4 +2,6 @@ Archive/
 __pycache__/
 *.csv
 *.csv#
+*.ods
+*.ods#
 *.pcap
