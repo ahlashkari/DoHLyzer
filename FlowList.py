@@ -25,6 +25,7 @@ class FlowList:
 
         for packet in packets:
             
+            expire_updated = 0.2
             count = 0
             direction = PacketDirection.FORWARD
 
@@ -51,19 +52,20 @@ class FlowList:
                     packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                     self.flows[(packet_flow_key, count)] = flow
 
-                elif (packet.time - flow.latest_timestamp) > 0.2:
+                elif (packet.time - flow.latest_timestamp) > expire_updated:
 
                     #if the packet exists in the flow but the packet is sent
                     #after too much of a delay than it is a part of a new flow.
-                    expired = 0.2
+                    expired = expire_updated
                     while (packet.time - flow.latest_timestamp) > expired:
 
                         count += 1
-                        expired += 0.2
+                        expired += expire_updated
 
                         direction = PacketDirection.REVERSE
                         packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                         flow = self.flows.get((packet_flow_key, count))
+
                         if flow is None:
                             flow = Flow(packet, direction, interface)
                             self.flows[(packet_flow_key, count)] = flow
@@ -81,11 +83,22 @@ class FlowList:
                             packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                             self.flows[(packet_flow_key, count)] = flow
 
-            elif (packet.time - flow.latest_timestamp) > 0.2:
-                count += 1
-                direction = PacketDirection.FORWARD
-                packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
-                flow = self.flows.get((packet_flow_key, count))
+            elif (packet.time - flow.latest_timestamp) > expire_updated:
+
+                expired = expire_updated
+                while (packet.time - flow.latest_timestamp) > expired:
+
+                    count += 1
+                    expired += expire_updated
+
+                    direction = PacketDirection.FORWARD
+                    packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
+                    flow = self.flows.get((packet_flow_key, count))
+
+                    if flow is None:
+                        flow = Flow(packet, direction, interface)
+                        self.flows[(packet_flow_key, count)] = flow
+                        break
 
                 if flow is None:
                     direction = PacketDirection.REVERSE
@@ -99,8 +112,6 @@ class FlowList:
                         self.flows[(packet_flow_key, count)] = flow
 
 
-
-            print("flow.latest_timestamp {} - packet.time {} = {}".format(flow.latest_timestamp, packet.time, packet.time - flow.latest_timestamp))
             flow.add_packet(packet, direction)
 
 
