@@ -159,5 +159,5 @@ class Flow:
         """
         self.packets.append((packet, direction))
 
-        self.latest_timestamp = max([p.time for p, _ in self.packets])
+        self.latest_timestamp = max([packet.time, self.latest_timestamp])
             

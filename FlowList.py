@@ -65,7 +65,6 @@ class FlowList:
                         flow = self.flows.get((packet_flow_key, count))
 
                         if flow is None:
-                            dbranch.append("D")
                             flow = Flow(packet, direction, interface)
                             self.flows[(packet_flow_key, count)] = flow
                             break
