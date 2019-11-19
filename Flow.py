@@ -14,6 +14,7 @@ from scapy.layers.inet import IP, TCP
 from scapy.layers.l2 import Ether
 
 #internal imports
+
 from ContElements.Barks import Barks
 from ContElements.TimeDiff import TimeDiff
 
@@ -29,17 +30,14 @@ from ContFreeElements.PacketTime import PacketTime
 
 warnings.filterwarnings("ignore")
 
-#TODO: Rename to flow.
 
 class Flow:
-    """This class summarizes the features of the network traffic.
+    """This class summarizes the values of the features of the network flows.
     
     """
 
-    
-
     def __init__(self, packet: Any, direction: Enum, interface: Any) -> None:
-        """This method initializes an object from the Feature class.
+        """This method initializes an object from the Flow class.
 
         Args:
             packet (Any): A packet from the network.
@@ -48,16 +46,16 @@ class Flow:
 
         """
 
-        self.dest_ip, self.src_ip, self.src_port, self.dest_port = \
+        self.dest_ip, self.src_ip, self.src_port, self.dest_port, self.time = \
             PacketFlowKey.get_packet_flow_key(packet, direction)
 
         self.packets = []
-
         self.interface = interface
         self.latest_timestamp = 0
 
+
     def get_data(self) -> dict:
-        """The class returns the values of the features extracted from the traffic.
+        """This method obtains the values of the features extracted from each flow.
 
         Note:
             Only some of the network data plays well together in this list.
@@ -82,8 +80,7 @@ class Flow:
                 'DestinationIP' : self.dest_ip, 
                 'SourcePort' : self.src_port,
                 'DestinationPort' : self.dest_port,
-                'TimeStamp' : self.latest_timestamp,
-                'TimeStamp2' : packet_time.get_time_stamp(),
+                'TimeStamp' : packet_time.get_time_stamp(),
                 'Duration' : packet_time.get_duration(),
                 'DurationTotal' : packet_time.get_duration_total(),
                 'FlowBytesSent' : barks.get_bytes_sent(),
@@ -156,11 +153,11 @@ class Flow:
                 'EmbeddedSynFin' : flags.get_contain_finsyn_count(),
         }
 
-    def add_packet(self, packet: Any, direction: Enum) -> None:
+    def add_packet(self, packet, direction) -> None:
         """Adds a packet to the current list of packets.
         
         """
         self.packets.append((packet, direction))
-        first_time = [packet.time for packet, _ in self.packets][0]
-        if packet.time > first_time:
-            self.latest_timestamp = packet.time
+
+        self.latest_timestamp = max([p.time for p, _ in self.packets])
+            

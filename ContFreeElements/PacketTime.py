@@ -26,8 +26,8 @@ class PacketTime:
     grand_total = 0
     duration_total = 0
 
-    def __init__(self, feature):
-        self.feature = feature
+    def __init__(self, flow):
+        self.flow = flow
         PacketTime.count += 1
 
     def _get_packet_times(self) -> list:
@@ -37,7 +37,7 @@ class PacketTime:
             A list of the packet times.
 
         """
-        packet_times = [self.feature.packet.time for self.feature.packet, _ in self.feature.packets]
+        packet_times = [self.flow.packet.time for self.flow.packet, _ in self.flow.packets]
         return packet_times
 
     def get_time_stamp(self):
@@ -77,7 +77,7 @@ class PacketTime:
         return PacketTime.duration_total
 
     def get_var(self) -> float:
-        """Calculates the variation of packet times in a network Feature.
+        """Calculates the variation of packet times in a network flow.
 
         Returns:
             float: The variation of packet times.

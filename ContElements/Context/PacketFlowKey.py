@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os
+import sys
 
 from enum import Enum, auto
 import os
@@ -6,8 +8,9 @@ from typing import List, Union, Any
 
 from ContElements.Context.PacketDirection import PacketDirection
 
+
 class PacketFlowKey:
-    def get_packet_flow_key(packet: Any, direction: Enum) -> Any:
+    def get_packet_flow_key(packet: Any, direction: Enum) -> tuple:
         """Creates a key signature for a packet.
 
         Summary:
@@ -26,7 +29,7 @@ class PacketFlowKey:
             TCP flags.
 
         """
-
+        time = True
         if packet.proto == 6:
             protocol = 'TCP'
         elif packet.proto == 17:
@@ -45,4 +48,4 @@ class PacketFlowKey:
             src_port = packet[protocol].dport
             dest_port = packet[protocol].sport
 
-        return dest_ip, src_ip, src_port, dest_port
+        return dest_ip, src_ip, src_port, dest_port, time
