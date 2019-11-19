@@ -22,7 +22,7 @@ class FlowList:
     def __init__(self, interface, packets) -> None:
         # local_mac = get_if_hwaddr(interface)
         self.flows = {}
-
+        dbranch = []
         for packet in packets:
             
             expire_updated = 0.2
@@ -32,7 +32,6 @@ class FlowList:
             #Creates a variable to check
             packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
             flow = self.flows.get((packet_flow_key, count))
-            # self._expired(packet, flow, packet_flow_key, 2)
 
             #if there is no forward flow with a count of 0
             if flow is None:
@@ -41,6 +40,7 @@ class FlowList:
                 direction = PacketDirection.REVERSE
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 flow = self.flows.get((packet_flow_key, count))
+                dbranch.append("A")
                 
                 # self._expired(packet, flow, packet_flow_key, 2)
                           
@@ -51,12 +51,14 @@ class FlowList:
                     flow = Flow(packet, direction, interface)
                     packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                     self.flows[(packet_flow_key, count)] = flow
+                    dbranch.append("B")
 
                 elif (packet.time - flow.latest_timestamp) > expire_updated:
 
                     #if the packet exists in the flow but the packet is sent
                     #after too much of a delay than it is a part of a new flow.
                     expired = expire_updated
+                    dbranch.append("C")
                     while (packet.time - flow.latest_timestamp) > expired:
 
                         count += 1
@@ -67,25 +69,15 @@ class FlowList:
                         flow = self.flows.get((packet_flow_key, count))
 
                         if flow is None:
+                            dbranch.append("D")
                             flow = Flow(packet, direction, interface)
                             self.flows[(packet_flow_key, count)] = flow
                             break
 
-                    if flow is None:
-                        #Now we are checking the flow in the forward direction
-                        #with the count of one
-                        direction = PacketDirection.FORWARD
-                        packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
-                        flow = self.flows.get((packet_flow_key, count))
-
-                        if flow is None:
-                            flow = Flow(packet, direction, interface)
-                            packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
-                            self.flows[(packet_flow_key, count)] = flow
-
             elif (packet.time - flow.latest_timestamp) > expire_updated:
 
                 expired = expire_updated
+                dbranch.append("E")
                 while (packet.time - flow.latest_timestamp) > expired:
 
                     count += 1
@@ -96,31 +88,13 @@ class FlowList:
                     flow = self.flows.get((packet_flow_key, count))
 
                     if flow is None:
+                        dbranch.append("F")
                         flow = Flow(packet, direction, interface)
                         self.flows[(packet_flow_key, count)] = flow
                         break
 
-                if flow is None:
-                    direction = PacketDirection.REVERSE
-                    packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
-                    flow = self.flows.get((packet_flow_key, count))
-
-                    if flow is None:
-                        direction = PacketDirection.FORWARD
-                        flow = Flow(packet, direction, interface)
-                        packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
-                        self.flows[(packet_flow_key, count)] = flow
-
 
             flow.add_packet(packet, direction)
 
-
-        
     def get_flows(self) -> list:
         return self.flows.values()
-
-    def _expired(self, packet, flow, key, expiration):
-        pass
-
-            
-

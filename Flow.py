@@ -36,7 +36,7 @@ class Flow:
     
     """
 
-    def __init__(self, packet: Any, direction: Enum, interface: Any) -> None:
+    def __init__(self, packet: Any, direction: Enum, interface = "enp0s3") -> None:
         """This method initializes an object from the Flow class.
 
         Args:
