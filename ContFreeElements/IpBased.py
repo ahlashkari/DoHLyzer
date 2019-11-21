@@ -1,4 +1,7 @@
-class IpBased: 
+class IpBased:
+    """This class checks the flow destination IP against lists of IP addresses.
+
+    """
     def __init__(self, feature):
         self.ip_addr = feature.dest_ip
 
@@ -36,9 +39,8 @@ class IpBased:
 
         """
         ip_a = self.ip_addr
-        is_bad = ('43.224.225.220' == ip_a) or ('67.21.64.34' == ip_a) or\
-                 ('103.52.216.35' == ip_a) or ('104.248.53.213' == ip_a) or \
-                 ('104.238.151.101' == ip_a) or ('198.204.231.250' == ip_a) or \
-                 ('205.185.122.229' == ip_a)
+        is_bad = ip_a in ('43.224.225.220', '67.21.64.34', \
+            '103.52.216.35', '104.248.53.213', '104.238.151.101', \
+            '198.204.231.250', '205.185.122.229')
 
         return is_bad

@@ -2,21 +2,20 @@
 
 
 import csv
-from enum import Enum, auto
+#from enum import Enum, auto
 
-from scapy.all import sniff, get_if_list, get_if_hwaddr
-from scapy.layers.inet import IP, TCP
-from scapy.layers.l2 import Ether
+from scapy.all import sniff #, get_if_list, get_if_hwaddr
+
 
 #internal imports
 from FlowList import FlowList
 
 
 SNIFFED_PACKET_COUNT = 5000
-filename = 'output-https6.csv'
+filename = 'output-https.csv'
 
 
-#TODO: Tell what direction a packetflow is going in pcap file
+
 if __name__ == '__main__':
 
     ## Below is the commentted out functionality to choose a different interface
@@ -34,13 +33,14 @@ if __name__ == '__main__':
 
     #print("Capturing packets from `{}` interface...".format(user_choice))
 
-    #set count to 0 to get data continuously until this program is interupted 
+    #set count to 0 to get data continuously until this program is interupted
     #in the terminal with ctrl-c
     #replace iface with offline="<filename>"
 
     print("Capturing packets from enp0s3 interface...")
-    packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
-    # packets = sniff(iface='enp0s3', filter='port 443', count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
+    #packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
+    packets = sniff(iface='enp0s3', filter='port 443', \
+    count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
 
     flow_list = FlowList('enp0s3', packets)
 
@@ -55,3 +55,4 @@ if __name__ == '__main__':
                 writer.writerow(flow.get_data().values())
             else:
                 writer.writerow(flow.get_data().values())
+                

@@ -21,7 +21,7 @@ class PacketTime:
         grand_total(float): The cummulative total of the means.
         duration_total(float): The cummulative total of the durations.
 
-    """        
+    """    
     count = 0
     grand_total = 0
     duration_total = 0
@@ -43,7 +43,7 @@ class PacketTime:
     def get_time_stamp(self):
         """Returns the date and time in a human readeable format.
 
-        Return (str): 
+        Return (str):
             String of Date and time.
 
         """
@@ -87,7 +87,7 @@ class PacketTime:
 
     def get_std(self) -> float:
         """Calculates the standard deviation of packet times in a network flow.
-        
+
         Rens:
             float: The standard deviation of packet times.
 
@@ -104,7 +104,7 @@ class PacketTime:
         mean = 0
         if self._get_packet_times() != 0:
             mean = numpy.mean(self._get_packet_times())
-        
+
         return mean
 
     def _get_grand_total(self) -> None:
@@ -132,7 +132,7 @@ class PacketTime:
         """
         try:
             PacketTime.grand_mean = self._get_grand_total()/(PacketTime.count-1)
-        except (DecimalException):
+        except DecimalException:
             PacketTime.grand_mean = -1
 
         return PacketTime.grand_mean
@@ -156,7 +156,7 @@ class PacketTime:
         mode = -1
         if len(self._get_packet_times()) != 0:
             mode = float(stat.mode(self._get_packet_times())[0])
-        
+
         return mode
 
     def get_skew(self) -> float:
@@ -182,7 +182,7 @@ class PacketTime:
 
         Returns:
             float: The skew of the packet times.
-    
+
         """
         mean = self.get_mean()
         mode = self.get_mode()
@@ -192,7 +192,7 @@ class PacketTime:
 
         if std != 0:
             skew2 = dif/float(std)
-        
+
         return skew2
 
     def get_cov(self) -> float:
@@ -203,7 +203,7 @@ class PacketTime:
 
         """
         cov = -1
-        if self.get_mean() !=0:
+        if self.get_mean() != 0:
             cov = self.get_std()/self.get_mean()
-        
+
         return cov

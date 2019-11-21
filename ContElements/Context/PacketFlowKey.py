@@ -1,16 +1,11 @@
 #!/usr/bin/env python
-import os
-import sys
 
-from enum import Enum, auto
-import os
-from typing import List, Union, Any
 
 from ContElements.Context.PacketDirection import PacketDirection
 
 
 class PacketFlowKey:
-    def get_packet_flow_key(packet: Any, direction: Enum) -> tuple:
+    def get_packet_flow_key(packet, direction) -> tuple:
         """Creates a key signature for a packet.
 
         Summary:
@@ -19,17 +14,16 @@ class PacketFlowKey:
 
         Args:
             packet: A network packet
-            direction: The direction of a packet 
-        
+            direction: The direction of a packet
+
         Returns:
-            A tuple of the String IPv4 addresses of the destination, 
+            A tuple of the String IPv4 addresses of the destination,
             the source port as an int,
             the time to live value,
             the window size, and
             TCP flags.
 
         """
-        time = True
         if packet.proto == 6:
             protocol = 'TCP'
         elif packet.proto == 17:
@@ -39,7 +33,7 @@ class PacketFlowKey:
 
         if direction == PacketDirection.FORWARD:
             dest_ip = packet['IP'].dst
-            src_ip = packet['IP'].src 
+            src_ip = packet['IP'].src
             src_port = packet[protocol].sport
             dest_port = packet[protocol].dport
         else:
@@ -48,4 +42,4 @@ class PacketFlowKey:
             src_port = packet[protocol].dport
             dest_port = packet[protocol].sport
 
-        return dest_ip, src_ip, src_port, dest_port, time
+        return dest_ip, src_ip, src_port, dest_port

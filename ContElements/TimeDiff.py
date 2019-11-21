@@ -5,17 +5,13 @@
 import numpy
 from scipy import stats as stat
 
-#type hinting imports
-from typing import List, Any
-
 #internal imports
 from ContElements.Context.PacketDirection import PacketDirection
-from ContElements.Context.PacketFlowKey import PacketFlowKey
-
 
 #time difference between packets of foward and reverse flows
 class TimeDiff:
-    """A summary of features based on the time difference between an outgoing packet and the following response.
+    """A summary of features based on the time difference \
+       between an outgoing packet and the following response.
 
     Attributes:
         mean_count (int): The number of means.
@@ -30,8 +26,9 @@ class TimeDiff:
     def __init__(self, feature):
         self.feature = feature
 
-    def get_dif(self) -> List[float]:
-        """Calculates the time difference in seconds between an outgoing packet and the following response packet.
+    def get_dif(self) -> list:
+        """Calculates the time difference in seconds between\
+           an outgoing packet and the following response packet.
 
         Returns:
             List[float]: A list of time differences.
@@ -43,7 +40,7 @@ class TimeDiff:
         for packet, direction in self.feature.packets:
             if temp_direction == PacketDirection.FORWARD and direction == PacketDirection.REVERSE:
                 time_diff.append(packet.time-temp_packet.time)
-            temp_packet = packet 
+            temp_packet = packet
             temp_direction = direction
         return time_diff
 
@@ -57,7 +54,7 @@ class TimeDiff:
         var = -1
         if len(self.get_dif()) != 0:
             var = numpy.var(self.get_dif())
-        
+
         return var
 
     def get_mean(self) -> float:
@@ -70,7 +67,7 @@ class TimeDiff:
         mean = -1
         if len(self.get_dif()) != 0:
             mean = numpy.mean(self.get_dif())
-        
+
         return mean
 
     def _get_grand_total(self) -> float:
@@ -99,7 +96,7 @@ class TimeDiff:
 
         """
 
-        if (TimeDiff.mean_count > 1):
+        if TimeDiff.mean_count > 1:
             TimeDiff.grand_mean = self._get_grand_total()/(TimeDiff.mean_count-1)
         else:
             TimeDiff.grand_mean = self._get_grand_total()/(TimeDiff.mean_count)
@@ -123,14 +120,14 @@ class TimeDiff:
 
         """
         mode = -1
-        if len(self.get_dif()) !=0:
+        if len(self.get_dif()) != 0:
             mode = float(stat.mode(self.get_dif())[0])
 
         return mode
     def get_skew(self) -> float:
         """Calculates the skew of the of time differences.
 
-        Note: 
+        Note:
             Uses a simple skew formula using the mean and the median.
 
         Returns:
@@ -150,7 +147,7 @@ class TimeDiff:
     def get_skew2(self) -> float:
         """Calculates the skew of the of time differences.
 
-        Note: 
+        Note:
             Uses a simple skew formula using the mean and the mode
 
         Returns:
@@ -162,7 +159,7 @@ class TimeDiff:
         dif = (float(mean) - mode)
         std = self.get_std()
         skew2 = -10
-        if std !=0:
+        if std != 0:
             skew2 = dif/float(std)
 
         return skew2
@@ -193,6 +190,6 @@ class TimeDiff:
         cov = -1
         if self.get_mean() != 0:
             cov = self.get_std()/self.get_mean()
-        
+
         return cov
         

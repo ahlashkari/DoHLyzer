@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-#For math stuff
-import numpy
-from scipy import stats as stat
-
 #for type hinting
 from typing import List
 
-
+#For math stuff
+import numpy
+from scipy import stats as stat
 
 class PacketLength:
     """This class extracts features related to the Packet Lengths.
@@ -25,7 +23,7 @@ class PacketLength:
 
     def get_packet_length(self) -> List[int]:
         """Creates a list of packet lengths.
-        
+ 
         Returns:
             packet_lengths (List[int]):
 
@@ -60,7 +58,7 @@ class PacketLength:
 
     def get_std(self) -> float:
         """The standard deviation of packet lengths in a network flow.
-        
+ 
         Rens:
             float: The standard deviation of packet lengths.
 
@@ -77,7 +75,7 @@ class PacketLength:
         mean = 0
         if self.get_packet_length() != 0:
             mean = numpy.mean(self.get_packet_length())
-        
+
         return mean
 
     def _get_grand_total(self) -> float:
@@ -127,7 +125,7 @@ class PacketLength:
         mode = -1
         if len(self.get_packet_length()) != 0:
             mode = int(stat.mode(self.get_packet_length())[0])
-        
+
         return mode
 
     def get_skew(self) -> float:
@@ -153,7 +151,7 @@ class PacketLength:
 
         Returns:
             float: The skew of the packet lengths.
-    
+
         """
         mean = self.get_mean()
         mode = self.get_mode()
@@ -163,7 +161,7 @@ class PacketLength:
 
         if std != 0:
             skew2 = dif/std
-        
+
         return skew2
 
     def get_cov(self) -> float:
@@ -174,7 +172,7 @@ class PacketLength:
 
         """
         cov = -1
-        if self.get_mean() !=0:
+        if self.get_mean() != 0:
             cov = self.get_std()/self.get_mean()
         
         return cov

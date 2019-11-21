@@ -4,8 +4,8 @@ class Flags:
     """This class extracts features related to the TCP flags.
 
     """
-    def __init__(self,feature):
-        self.feature = feature 
+    def __init__(self, feature):
+        self.feature = feature
         self.flag_dict = {}
         self.synfin = 0
 
@@ -54,8 +54,8 @@ class Flags:
 
         for curr_flag in flags:
 
-            #bitwise comparisons 
-            
+            #bitwise comparisons
+
             if curr_flag == (self.flag_dict['NULL'][0]):
 
                 self.flag_dict['NULL'][1] += 1
@@ -120,10 +120,10 @@ class Flags:
 
         """
 
-        return self.flag_dict['NULL'][1]  
+        return self.flag_dict['NULL'][1]
 
 
-    #This group of methods represent 
+    #This group of methods represent
     #the single TCP flags
     def get_fin_count(self) -> int:
         """This feature counts the number of pure FIN flags in a flow.
@@ -146,7 +146,7 @@ class Flags:
         """
 
 
-        return self.flag_dict['FIN'][1] 
+        return self.flag_dict['FIN'][1]
 
     def get_syn_count(self) -> int:
         """This feature counts the number of pure SYN flags
@@ -169,7 +169,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['SYN'][1] 
+        return self.flag_dict['SYN'][1]
 
 
     def get_rst_count(self) -> int:
@@ -193,7 +193,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['RST'][1] 
+        return self.flag_dict['RST'][1]
 
     def get_psh_count(self) -> int:
         """This feature counts the number of pure PSH flags
@@ -216,7 +216,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['PSH'][1] 
+        return self.flag_dict['PSH'][1]
 
 
     def get_ack_count(self) -> int:
@@ -228,7 +228,7 @@ class Flags:
 
         """
         ack = 0x10
-        count = self._get_flags().count(ack)   
+        count = self._get_flags().count(ack)
 
         return count
 
@@ -265,7 +265,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['URG'][1] 
+        return self.flag_dict['URG'][1]
 
 
     def get_ece_count(self) -> int:
@@ -289,7 +289,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['ECE'][1] 
+        return self.flag_dict['ECE'][1]
 
 
     def get_cwr_count(self) -> int:
@@ -313,7 +313,7 @@ class Flags:
 
         """
 
-        return self.flag_dict['CWR'][1]          
+        return self.flag_dict['CWR'][1]
 
 
     #This group of methods represent some common
@@ -329,8 +329,8 @@ class Flags:
             int: The syn/fin flag count
 
         """
-        pa = 0x03
-        count = self._get_flags().count(pa)
+        syn_fin = 0x03
+        count = self._get_flags().count(syn_fin)
 
         return count
 
@@ -341,8 +341,8 @@ class Flags:
             int: The SYN/ACK flag count
 
         """
-        sa = 0x12
-        count = self._get_flags().count(sa)
+        syn_ack = 0x12
+        count = self._get_flags().count(syn_ack)
 
         return count
 
@@ -353,8 +353,8 @@ class Flags:
             int: The RST ACK flag count
 
         """
-        ra = 0x14
-        count = self._get_flags().count(ra)
+        rst_ack = 0x14
+        count = self._get_flags().count(rst_ack)
 
         return count
 
@@ -365,8 +365,8 @@ class Flags:
             int: The Push ACK flag count
 
         """
-        pa = 0x18
-        count = self._get_flags().count(pa)
+        push_ack = 0x18
+        count = self._get_flags().count(push_ack)
 
         return count
 

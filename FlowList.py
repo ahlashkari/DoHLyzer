@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import os
-import sys
 
-from datetime import timedelta
-from scapy.all import sniff, get_if_list, get_if_hwaddr
-from scapy.layers.inet import IP, TCP
-from scapy.layers.l2 import Ether
+#from datetime import timedelta
+#from scapy.all import sniff, get_if_list, get_if_hwaddr
+#from scapy.layers.inet import IP, TCP
+#from scapy.layers.l2 import Ether
 
 #internal imports
 from Flow import Flow
@@ -23,7 +21,7 @@ class FlowList:
         # local_mac = get_if_hwaddr(interface)
         self.flows = {}
         for packet in packets:
-            
+
             expire_updated = 0.2
             count = 0
             direction = PacketDirection.FORWARD
@@ -39,9 +37,9 @@ class FlowList:
                 direction = PacketDirection.REVERSE
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 flow = self.flows.get((packet_flow_key, count))
-                
+
                 # self._expired(packet, flow, packet_flow_key, 2)
-                          
+
                 if flow is None:
 
                     #if no flow exists create a new flow

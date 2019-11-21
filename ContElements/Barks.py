@@ -11,7 +11,6 @@ from scapy.layers.inet import IP, TCP
 from scapy.layers.l2 import Ether
 
 #internal imports
-from ContElements.Context.PacketFlowKey import PacketFlowKey
 from ContElements.Context.PacketDirection import PacketDirection
 
 #modifying the path to import a sibling
@@ -22,22 +21,24 @@ from ContFreeElements.PacketTime import PacketTime
 
 
 
-#Barks like a dog, bytes like a dog.    
+#Barks like a dog, bytes like a dog.
 class Barks:
     """Extracts features from the traffic related to the bytes in a flow.
 
     Attributes:
         total_bytes_sent (int): A cummalitve value of the bytes sent.
         total_bytes_received (int): A cummalitve value of the bytes received.
-        total_forward_header_bytes (int): A cummalitve value of the bytes sent in the forward direction of the flow.
-        total_reverse_header_bytes (int): A cummalitve value of the bytes sent in the reverse direction of the flow.
+        total_forward_header_bytes (int): A cummalitve value of the bytes \
+        sent in the forward direction of the flow.
+        total_reverse_header_bytes (int): A cummalitve value of the bytes \
+        sent in the reverse direction of the flow.
         row (int) : The row number.
 
     """
-    
+
     total_bytes_received = 0
     total_bytes_sent = 0
-    
+
     total_forward_header_bytes = 0
     total_reverse_header_bytes = 0
 
@@ -84,7 +85,7 @@ class Barks:
         Returns:
             int: The total amount of bytes
 
-        """        
+        """
         if Barks.row == 1:
             Barks.total_bytes_sent = 0
         else:
@@ -94,7 +95,7 @@ class Barks:
 
     def get_bytes_received(self) -> int:
         """Calculates the amount bytes received.
-        
+
         Returns:
             int: The amount of bytes.
 
@@ -128,7 +129,7 @@ class Barks:
         Returns:
             int: The total amount of bytes
 
-        """    
+        """
         if Barks.row == 1:
             Barks.total_bytes_received = 0
         else:
@@ -137,11 +138,12 @@ class Barks:
         return Barks.total_bytes_received
 
     def get_forward_header_bytes(self) -> int:
-        """Calculates the amount of header bytes in the header sent in the same direction as the flow.
-        
+        """Calculates the amount of header bytes \
+        in the header sent in the same direction as the flow.
+
         Returns:
             int: The amount of bytes.
-            
+
         """
         def header_size(packet):
             res = len(Ether()) + len(IP())
@@ -190,11 +192,12 @@ class Barks:
 
 
     def get_reverse_header_bytes(self) -> int:
-        """Calculates the amount of header bytes in the header sent in the opposite direction as the flow.
-        
+        """Calculates the amount of header bytes \
+         in the header sent in the opposite direction as the flow.
+
         Returns:
             int: The amount of bytes.
-            
+
         """
         def header_size(packet):
             res = len(Ether()) + len(IP())
@@ -213,7 +216,7 @@ class Barks:
         Returns:
             int: The total amount of bytes
 
-        """        
+        """
         if Barks.row == 1:
             Barks.total_reverse_header_bytes = 0
         else:
@@ -255,7 +258,7 @@ class Barks:
         ratio = -1
         if reverse_header_bytes != 0:
             ratio = forward_header_bytes/reverse_header_bytes
-        
+
         return ratio
 
     def get_total_header_in_out_ratio(self) -> float:
@@ -273,7 +276,7 @@ class Barks:
         ratio = -1
         if reverse_header_bytes != 0:
             ratio = forward_header_bytes/reverse_header_bytes
-        
+
         return ratio
 
     def get_initial_ttl(self) -> int:
@@ -286,4 +289,4 @@ class Barks:
         feat = self.feature
         return [packet['IP'].ttl for packet, _ in  \
             feat.packets][0]
-
+            
