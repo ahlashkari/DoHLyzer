@@ -14,7 +14,7 @@ import warnings
 from ContElements.Barks import Barks
 from ContElements.TimeDiff import TimeDiff
 
-from ContElements.Context.PacketFlowKey import PacketFlowKey
+from ContElements.Context import PacketFlowKey
 
 from ContFreeElements.Flags import Flags
 from ContFreeElements.IpBased import IpBased

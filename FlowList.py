@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 
 
-#from datetime import timedelta
-#from scapy.all import sniff, get_if_list, get_if_hwaddr
-#from scapy.layers.inet import IP, TCP
-#from scapy.layers.l2 import Ether
-
 #internal imports
 from Flow import Flow
 from ContElements.Context.PacketDirection import PacketDirection
-from ContElements.Context.PacketFlowKey import PacketFlowKey
+from ContElements.Context import PacketFlowKey
 
 
 
@@ -22,7 +17,7 @@ class FlowList:
         self.flows = {}
         for packet in packets:
 
-            expire_updated = 0.2
+            expire_updated = 2
             count = 0
             direction = PacketDirection.FORWARD
 
@@ -35,10 +30,9 @@ class FlowList:
 
                 #there might be one of it in reverse
                 direction = PacketDirection.REVERSE
+                direction = self.wrong(packet, direction)
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 flow = self.flows.get((packet_flow_key, count))
-
-                # self._expired(packet, flow, packet_flow_key, 2)
 
                 if flow is None:
 
@@ -56,9 +50,8 @@ class FlowList:
                     while (packet.time - flow.latest_timestamp) > expired:
 
                         count += 1
-                        expired += expire_updated
-
                         direction = PacketDirection.REVERSE
+                        expired += expire_updated
                         packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                         flow = self.flows.get((packet_flow_key, count))
 
@@ -74,7 +67,6 @@ class FlowList:
 
                     count += 1
                     expired += expire_updated
-
                     direction = PacketDirection.FORWARD
                     packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                     flow = self.flows.get((packet_flow_key, count))
@@ -84,8 +76,9 @@ class FlowList:
                         self.flows[(packet_flow_key, count)] = flow
                         break
 
-
+            
             flow.add_packet(packet, direction)
 
     def get_flows(self) -> list:
         return self.flows.values()
+        
