@@ -30,7 +30,6 @@ class FlowList:
 
                 #there might be one of it in reverse
                 direction = PacketDirection.REVERSE
-                direction = self.wrong(packet, direction)
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 flow = self.flows.get((packet_flow_key, count))
 
@@ -75,10 +74,8 @@ class FlowList:
                         flow = Flow(packet, direction, interface)
                         self.flows[(packet_flow_key, count)] = flow
                         break
-
             
             flow.add_packet(packet, direction)
 
     def get_flows(self) -> list:
         return self.flows.values()
-        
