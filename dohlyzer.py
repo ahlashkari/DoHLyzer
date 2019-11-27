@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     while match == False:
         file = input("That is not an acceptable file name,\
- please enter a different file name\n")
+        please enter a different file name\n")
 
         match = bool(re.match(r"(\S)+.csv", file) and \
         re.match(r"[^/:*#?!=\"<>|.\'@$&`%{}]+.csv", file))
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     #replace iface with offline="<filename>"
 
     print("Capturing packets from enp0s3 interface...")
-    # packets = sniff(offline = 'ssh.pcap', filter='tcp port 443', prn=lambda x: x.summary())
+    # packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
     packets = sniff(iface='enp0s3', filter='port 443', \
     count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
 
