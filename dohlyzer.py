@@ -51,9 +51,16 @@ def _online():
     print("Please choose which interface you wish to analyze: ")
     for i, interface in enumerate(options):
         print("({}) {}".format(i + 1, interface))
-
-    user_entry = int(input()) - 1
-    user_choice = options[user_entry]
+    while True:
+        try:
+            user_entry = int(input()) - 1
+            user_choice = options[user_entry]
+            break
+        except ValueError:
+            print("Please enter a number only")
+        except IndexError:
+            print("Please enter a number that is contained within the list only.")       
+         
     print("Capturing packets from `{}` interface...".format(user_choice)) 
 
     packets = sniff(iface = user_choice, filter = 'port 443', \
