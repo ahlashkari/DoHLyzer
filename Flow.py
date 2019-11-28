@@ -151,6 +151,10 @@ class Flow:
     def add_packet(self, packet, direction) -> None:
         """Adds a packet to the current list of packets.
 
+        Args:
+            packet: Packet to be added to a flow
+            direction: The direction the packet is going in that flow
+
         """
         self.packets.append((packet, direction))
 
