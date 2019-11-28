@@ -14,52 +14,54 @@ from FlowList import FlowList
 
 SNIFFED_PACKET_COUNT = 0
 
-if __name__ == '__main__':
-    file = input("Please enter a .csv file that you would like to save the results to.\n")
-    match = bool(re.match(r"(\S)+.csv", file) and \
-    re.match(r"[^/:*#?!=\"<>|.\'@$&`%{}]+.csv", file))
+def _valid_file(file) -> str:
+    match = bool(re.match(r"\b(\S)+.csv\b", file) and \
+    re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
 
     while match == False:
         file = input("That is not an acceptable file name,\
-        please enter a different file name \n")
+please enter a different file name \n")
 
-        match = bool(re.match(r"(\S)+.csv", file) and \
-        re.match(r"[^/:*#?!=\"<>|.\'@$&`%{}]+.csv", file))
-    ## Below is the commentted out functionality to choose a different interface
-    ## to capture packets
-    ## enp0s3 is simply the one that has worked best so far.
+        match = bool(re.match(r"\b(\S)+.csv\b", file) and \
+        re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
+    return file
 
-
-    #set count to 0 to get data continuously until this program is interupted
-    #in the terminal with ctrl-c
-    #replace iface with offline="<filename>"
-    choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?"))
-    print(choice)
+def _on_off_line(choice):
     while choice != 1 and choice != 2:
         print("Only an input of the number 1 or the number 2 is accepted")
-        choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?"))
+        while True:
+            try:
+                choice = input("Would you like to use a pcap file (1) or capture live traffic (2)?\n")
+                choice = int(choice)
+                break
+            except ValueError:
+                print("The input must be integers only.")
+
 
     if choice == 1:
         packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
         user_choice = 'enp0s3'
     elif choice == 2:
-        options = get_if_list()
+        packets, user_choice  = _online()
 
-        print("Please choose which interface you wish to analyze:")
-        for i, interface in enumerate(options):
-            print("({}) {}".format(i + 1, interface))
+    return packets, user_choice
 
-        user_entry = int(input()) - 1
+def _online():
+    options = get_if_list()
+    print("Please choose which interface you wish to analyze: ")
+    for i, interface in enumerate(options):
+        print("({}) {}".format(i + 1, interface))
 
-        user_choice = options[user_entry]
+    user_entry = int(input()) - 1
+    user_choice = options[user_entry]
+    print("Capturing packets from `{}` interface...".format(user_choice)) 
 
-        print("Capturing packets from `{}` interface...".format(user_choice))
-        
-        packets = sniff(iface = user_choice, filter = 'port 443', \
-            count = SNIFFED_PACKET_COUNT, prn = lambda x: x.summary())
+    packets = sniff(iface = user_choice, filter = 'port 443', \
+    count = SNIFFED_PACKET_COUNT, prn = lambda x: x.summary())
 
-    flow_list = FlowList(user_choice, packets)
+    return packets, user_choice
 
+def _csv_scribe(file, flow_list) -> None:
     with open(file, 'w') as output:
 
         writer = csv.writer(output)
@@ -71,3 +73,15 @@ if __name__ == '__main__':
                 writer.writerow(flow.get_data().values())
             else:
                 writer.writerow(flow.get_data().values())
+
+
+if __name__ == '__main__':
+    file = input("Please enter a .csv file that you would like to save the results to.\n")
+    file = _valid_file(file)
+
+    choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?\n"))
+    print(choice)
+    packets, user_choice = _on_off_line(choice)
+
+    flow_list = FlowList(user_choice, packets)
+    _csv_scribe(file, flow_list)
