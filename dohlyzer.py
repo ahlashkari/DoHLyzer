@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     while match == False:
         file = input("That is not an acceptable file name,\
-        please enter a different file name\n")
+        please enter a different file name \n")
 
         match = bool(re.match(r"(\S)+.csv", file) and \
         re.match(r"[^/:*#?!=\"<>|.\'@$&`%{}]+.csv", file))
@@ -46,11 +46,19 @@ if __name__ == '__main__':
     #set count to 0 to get data continuously until this program is interupted
     #in the terminal with ctrl-c
     #replace iface with offline="<filename>"
+    choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?"))
+    print(choice)
+    while choice != 1 and choice != 2:
+        print("Only an input of the number 1 or the number 2 is accepted")
+        choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?"))
+
 
     print("Capturing packets from enp0s3 interface...")
-    # packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
-    packets = sniff(iface='enp0s3', filter='port 443', \
-    count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
+    if choice == 1:
+        packets = sniff(offline = 'test.pcap', filter='tcp port 443', prn=lambda x: x.summary())
+    elif choice == 2:
+        packets = sniff(iface='enp0s3', filter='port 443', \
+        count=SNIFFED_PACKET_COUNT, prn=lambda x: x.summary())
 
     flow_list = FlowList('enp0s3', packets)
 
