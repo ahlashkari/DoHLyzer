@@ -79,7 +79,15 @@ if __name__ == '__main__':
     file = input("Please enter a .csv file that you would like to save the results to.\n")
     file = _valid_file(file)
 
-    choice = int(input("Would you like to use a pcap file (1) or capture live traffic (2)?\n"))
+    while True:
+        try:
+            choice = int(input("Would you like to use a pcap \
+file (1) or capture live traffic (2)?\n"))
+            
+            break
+        except ValueError:
+            print("That is not an integer.")
+
     print(choice)
     packets, user_choice = _on_off_line(choice)
 
