@@ -37,7 +37,7 @@ class Flow:
         Args:
             packet (Any): A packet from the network.
             direction (Enum): The direction the packet is going ove the wire.
-            interface (Any): What is being used to capture the network traffic.
+            interface (Any): What is being used to capture the network traffic. TODO: remove this
 
         """
 

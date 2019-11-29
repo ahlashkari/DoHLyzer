@@ -1,27 +1,25 @@
 #!/usr/bin/env python
 
-#standard library imports
+# standard library imports
 
 import os
 import sys
 
-#network sniffing imports
-from scapy.all import get_if_hwaddr
+# network sniffing imports
 from scapy.layers.inet import IP, TCP
 from scapy.layers.l2 import Ether
 
-#internal imports
+# internal imports
 from ContElements.Context.PacketDirection import PacketDirection
 
-#modifying the path to import a sibling
-#by going up to the parent directory
+# modifying the path to import a sibling
+# by going up to the parent directory
 sys.path.append(os.path.realpath('..'))
 
 from ContFreeElements.PacketTime import PacketTime
 
 
-
-#Barks like a dog, bytes like a dog.
+# Barks like a dog, bytes like a dog.
 class Barks:
     """Extracts features from the traffic related to the bytes in a flow.
 
@@ -56,10 +54,10 @@ class Barks:
 
         """
         feat = self.feature
-        interface = get_if_hwaddr(self.feature.interface)
+        interface = feat.src_ip
 
-        return sum(len(packet) for packet, _ in  \
-            feat.packets if packet.src == interface)
+        return sum(len(packet) for packet, direction in \
+                   feat.packets if direction == PacketDirection.FORWARD)
 
     def get_sent_rate(self) -> int:
         """Calculates the rate of the bytes being sent in the current flow.
@@ -77,7 +75,6 @@ class Barks:
             rate = sent / duration
 
         return rate
-
 
     def get_total_bytes_sent(self) -> int:
         """Calculates the cummalative total bytes sent.
@@ -101,10 +98,10 @@ class Barks:
 
         """
         packets = self.feature.packets
-        interface = get_if_hwaddr(self.feature.interface)
+        interface = self.feature.src_ip
 
-        return sum(len(packet) for packet, _ in \
-            packets if packet.src != interface)
+        return sum(len(packet) for packet, direction in \
+                   packets if direction == PacketDirection.REVERSE)
 
     def get_received_rate(self) -> int:
         """Calculates the rate of the bytes being received in the current flow.
@@ -145,6 +142,7 @@ class Barks:
             int: The amount of bytes.
 
         """
+
         def header_size(packet):
             res = len(Ether()) + len(IP())
             if packet.proto == 6:
@@ -154,7 +152,7 @@ class Barks:
         packets = self.feature.packets
 
         return sum(header_size(packet) for packet, direction \
-            in packets if direction == PacketDirection.FORWARD)
+                   in packets if direction == PacketDirection.FORWARD)
 
     def get_forward_rate(self) -> int:
         """Calculates the rate of the bytes being going forward
@@ -187,9 +185,7 @@ class Barks:
         else:
             Barks.total_forward_header_bytes += self.get_forward_header_bytes()
 
-
         return Barks.total_forward_header_bytes
-
 
     def get_reverse_header_bytes(self) -> int:
         """Calculates the amount of header bytes \
@@ -199,6 +195,7 @@ class Barks:
             int: The amount of bytes.
 
         """
+
         def header_size(packet):
             res = len(Ether()) + len(IP())
             if packet.proto == 6:
@@ -208,7 +205,7 @@ class Barks:
         packets = self.feature.packets
 
         return sum(header_size(packet) for packet, direction \
-            in packets if direction == PacketDirection.REVERSE)
+                   in packets if direction == PacketDirection.REVERSE)
 
     def get_total_reverse_bytes(self) -> int:
         """Calculates the total reverse header bytes
@@ -242,7 +239,6 @@ class Barks:
 
         return rate
 
-
     def get_header_in_out_ratio(self) -> float:
         """Calculates the ratio of foward traffic over reverse traffic.
 
@@ -257,7 +253,7 @@ class Barks:
 
         ratio = -1
         if reverse_header_bytes != 0:
-            ratio = forward_header_bytes/reverse_header_bytes
+            ratio = forward_header_bytes / reverse_header_bytes
 
         return ratio
 
@@ -275,7 +271,7 @@ class Barks:
 
         ratio = -1
         if reverse_header_bytes != 0:
-            ratio = forward_header_bytes/reverse_header_bytes
+            ratio = forward_header_bytes / reverse_header_bytes
 
         return ratio
 
@@ -287,6 +283,5 @@ class Barks:
 
         """
         feat = self.feature
-        return [packet['IP'].ttl for packet, _ in  \
-            feat.packets][0]
-            
+        return [packet['IP'].ttl for packet, _ in \
+                feat.packets][0]
