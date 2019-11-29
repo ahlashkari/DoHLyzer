@@ -68,19 +68,6 @@ def _online():
 
     return packets, user_choice
 
-def _csv_scribe(file, flow_list) -> None:
-    with open(file, 'w') as output:
-
-        writer = csv.writer(output)
-        #outputs the feature name for the headers of the csv file
-
-        for index, flow in enumerate(flow_list.get_flows()):
-            if index == 0:
-                writer.writerow(flow.get_data().keys())
-                writer.writerow(flow.get_data().values())
-            else:
-                writer.writerow(flow.get_data().values())
-
 
 if __name__ == '__main__':
     file = input("Please enter a .csv file that you would like to save the results to.\n")
@@ -98,5 +85,15 @@ file (1) or capture live traffic (2)?\n"))
     print(choice)
     packets, user_choice = _on_off_line(choice)
 
-    flow_list = FlowList(user_choice, packets)
-    _csv_scribe(file, flow_list)
+    output = open(file, 'w'):
+    writer = csv.writer(output)
+
+
+    FlowList(user_choice, packets, output)
+
+        # for index, flow in enumerate(flow_list.get_flows()):
+        #     if index == 0:
+        #         writer.writerow(flow.get_data().keys())
+        #         writer.writerow(flow.get_data().values())
+        #     else:
+        #         writer.writerow(flow.get_data().values())
