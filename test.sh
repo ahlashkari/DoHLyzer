@@ -16,14 +16,14 @@ done
 if [ choice=2 ] 
 then
 	file="test2.csv"
-	printf "$file\n$choice\n$interf" | sudo python3 dohlyzer.py
-else
-	file="test.csv"
+	printf "$file\n$choice\n$interf" | python3 dohlyzer.py
+elif [ choice=1 ]
+then
+	file="test3.csv"
 	printf "$file\n$choice" | python3 dohlyzer.py
 fi
 
 wait
 xdg-open $file &
-sleep 5
 dialogue="Text Import \- \[$file\]"
 xdotool key --window "$dialogue" Return
