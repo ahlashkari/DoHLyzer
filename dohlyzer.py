@@ -85,11 +85,11 @@ file (1) or capture live traffic (2)?\n"))
     print(choice)
     packets, user_choice = _on_off_line(choice)
 
-    output = open(file, 'w'):
+    output = open(file, 'w')
     writer = csv.writer(output)
 
 
-    FlowList(user_choice, packets, output)
+    FlowList(user_choice, packets, writer)
 
         # for index, flow in enumerate(flow_list.get_flows()):
         #     if index == 0:

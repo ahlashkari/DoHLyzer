@@ -69,24 +69,24 @@ class FlowList:
                         break
 
             flow.add_packet(packet, direction)
-            if i % 100 == 99:
-                garbage_collect(packet.time, csv_writer)
+            if index % 100 == 99:
+                self.garbage_collect(packet.time, csv_writer)
 
-        garbage_collect(None, csv_writer)
+        self.garbage_collect(None, csv_writer)
 
     def get_flows(self) -> list:
         return self.flows.values()
 
-    def garbage_collect(latest_time, csv_writer) -> None:
-        print('Garbage Collection Began. Flows = {}'.format(len(flows)))
-        keys = self.flows.keys()
+    def garbage_collect(self, latest_time, csv_writer) -> None:
+        print('Garbage Collection Began. Flows = {}'.format(len(self.flows)))
+        keys = list(self.flows)
         for k in keys:
             flow = self.flows.pop(k)
             if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
                 if self.csv_line == 0:
-                    writer.writerow(flow.get_data().keys())
-                writer.writerow(flow.get_data().values())
+                    csv_writer.writerow(flow.get_data().keys())
+                csv_writer.writerow(flow.get_data().values())
                 self.csv_line += 1
-        print('Garbage Collection Finished. Flows = {}'.format(len(flows)))
+        print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))
 
 
