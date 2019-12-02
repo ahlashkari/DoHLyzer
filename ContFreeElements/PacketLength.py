@@ -35,6 +35,12 @@ class PacketLength:
         return packet_lengths
 
     def first_fifty(self) -> list:
+        """Returns first 50 packet sizes
+
+        Return:
+            List of Packet Sizes
+
+        """
         return  self.get_packet_length()[:50]
 
     def get_first_packet_length(self) -> int:

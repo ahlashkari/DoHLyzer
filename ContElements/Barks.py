@@ -45,6 +45,24 @@ class Barks:
     def __init__(self, feature):
         self.feature = feature
         Barks.row += 1
+    def direction_list(self) -> list:
+        """Returns a list of the directions of the \
+        first 50 packets in a flow.
+
+        Return:
+            list with packet directions.
+
+        """
+        direction_list = []
+        index = 0
+        feat = self.feature
+        for packet, direction in feat.packets:
+            direction_list.append(direction.name)
+            index += 1
+            if index >= 50:
+                break
+
+        return direction_list
 
     def get_bytes_sent(self) -> int:
         """Calculates the amount bytes sent from the machine being used to run DoHlyzer.

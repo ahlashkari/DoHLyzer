@@ -77,6 +77,7 @@ class Flow:
             'DestinationPort' : self.dest_port,
             'RelativeTimeList' : packet_time.relative_time_list(),
             'PacketSizeList' : packet_length.first_fifty(),
+            'DirectionList' : barks.direction_list(),
             'TimeStamp' : packet_time.get_time_stamp(),
             'Duration' : packet_time.get_duration(),
             'DurationTotal' : packet_time.get_duration_total(),
