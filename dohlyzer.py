@@ -40,9 +40,9 @@ def _on_off_line(choice, session):
                 print("The input must be integers only.")
 
     if choice == 1:
-        return AsyncSniffer(offline='https2.pcap', filter='tcp port 443', prn=None, session=session)
+        return AsyncSniffer(offline='test.pcap', filter='tcp port 443', prn=None, session=session)
     elif choice == 2:
-        _online(session)
+        return _online(session)
 
 
 def _online(session):
@@ -82,8 +82,12 @@ def main():
 
     sniffer = _on_off_line(choice, FlowSession)
     sniffer.start()
-    sniffer.join()
-
+    try:
+        sniffer.join()
+    except KeyboardInterrupt as e:
+        sniffer.stop()
+    finally:
+        sniffer.join()
 
 if __name__ == '__main__':
     main()

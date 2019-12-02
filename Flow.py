@@ -19,6 +19,7 @@ from ContElements.Context import PacketFlowKey
 from ContFreeElements.Flags import Flags
 from ContFreeElements.IpBased import IpBased
 from ContFreeElements.PacketLength import PacketLength
+from ContFreeElements.PacketList import PacketList
 from ContFreeElements.PacketTime import PacketTime
 
 
@@ -66,6 +67,7 @@ class Flow:
         flags = Flags(self)
         ip = IpBased(self)
         packet_length = PacketLength(self)
+        # packet_list = PacketList(self.packets)
         packet_time = PacketTime(self)
         time = TimeDiff(self)
 
@@ -75,6 +77,7 @@ class Flow:
             'DestinationIP' : self.dest_ip,
             'SourcePort' : self.src_port,
             'DestinationPort' : self.dest_port,
+            'RelativeTimeList' : packet_time.relative_time_list(),
             'TimeStamp' : packet_time.get_time_stamp(),
             'Duration' : packet_time.get_duration(),
             'DurationTotal' : packet_time.get_duration_total(),

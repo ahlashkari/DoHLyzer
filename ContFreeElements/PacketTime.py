@@ -40,6 +40,22 @@ class PacketTime:
         packet_times = [self.flow.packet.time for self.flow.packet, _ in self.flow.packets]
         return packet_times
 
+    def relative_time_list(self) -> list:
+        relative_time_list = []
+        packet_times = self._get_packet_times(
+            )
+        for index, time in enumerate(packet_times):
+            if index == 0:
+                relative_time_list.append(float(time))
+            elif index < len(packet_times):
+                relative_time_list.append(float(time - packet_times[index - 1]))
+            elif index < 50:
+                relative_time_list.append(0)
+            else:
+                break
+
+        return relative_time_list
+
     def get_time_stamp(self):
         """Returns the date and time in a human readeable format.
 

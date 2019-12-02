@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import csv
 from itertools import groupby
+import threading
+import time
 
 # internal imports
 from scapy.sessions import DefaultSession
@@ -86,6 +88,12 @@ class FlowSession(DefaultSession):
                     break
 
         flow.add_packet(packet, direction)
+        # process = threading.Thread(target = self.garbage_collect, \
+        # args = (packet.time, self.csv_writer))
+       
+        # process.start()
+        # process.join()
+
         if self.packets_count % 10000 == 0:
             self.garbage_collect(packet.time, self.csv_writer)
 
