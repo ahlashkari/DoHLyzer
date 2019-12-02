@@ -46,7 +46,7 @@ class PacketTime:
             )
         for index, time in enumerate(packet_times):
             if index == 0:
-                relative_time_list.append(float(time))
+                relative_time_list.append(0)
             elif index < len(packet_times):
                 relative_time_list.append(float(time - packet_times[index - 1]))
             elif index < 50:
