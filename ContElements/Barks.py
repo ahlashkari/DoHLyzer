@@ -45,6 +45,10 @@ class Barks:
     def __init__(self, feature):
         self.feature = feature
         Barks.row += 1
+
+    def tls_fields(self):
+        return self.feature.packets[0]
+
     def direction_list(self) -> list:
         """Returns a list of the directions of the \
         first 50 packets in a flow.
@@ -63,6 +67,7 @@ class Barks:
                 break
 
         return direction_list
+
 
     def get_bytes_sent(self) -> int:
         """Calculates the amount bytes sent from the machine being used to run DoHlyzer.
@@ -302,4 +307,4 @@ class Barks:
         """
         feat = self.feature
         return [packet['IP'].ttl for packet, _ in \
-                feat.packets][0]
+        feat.packets][0]

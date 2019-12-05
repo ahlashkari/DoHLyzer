@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import cryptography
+
 #For type hinting and making things easier to handle
 from enum import Enum
 from typing import Any
@@ -8,11 +10,14 @@ from typing import Any
 #aka: numpy freaks out
 import warnings
 
+from scapy.layers import tls 
+from scapy.all import load_layer
+
 
 #internal imports
-
 from ContElements.Barks import Barks
 from ContElements.TimeDiff import TimeDiff
+from ContElements.TlsInfo import TlsInfo
 
 from ContElements.Context import PacketFlowKey
 
@@ -24,7 +29,7 @@ from ContFreeElements.PacketTime import PacketTime
 
 
 warnings.filterwarnings("ignore")
-
+load_layer('tls')
 
 class Flow:
     """This class summarizes the values of the features of the network flows.
@@ -68,6 +73,7 @@ class Flow:
         packet_length = PacketLength(self)
         packet_time = PacketTime(self)
         time = TimeDiff(self)
+        tls = TlsInfo(self)
 
 
         return {
@@ -75,6 +81,7 @@ class Flow:
             'DestinationIP' : self.dest_ip,
             'SourcePort' : self.src_port,
             'DestinationPort' : self.dest_port,
+            'ClientCipherSuit' : tls.client_cipher_suit(),
             'RelativeTimeList' : packet_time.relative_time_list(),
             'PacketSizeList' : packet_length.first_fifty(),
             'DirectionList' : barks.direction_list(),

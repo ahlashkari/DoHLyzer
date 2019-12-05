@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
 import argparse
+import cryptography
 import re
 import csv
 # from enum import Enum, auto
 
-from scapy.all import sniff, get_if_list
-
-# internal imports
+from scapy.all import sniff, get_if_list, load_layer
 from scapy.sendrecv import AsyncSniffer
+from scapy.layers import tls 
 
 from FlowSession import FlowSession
 
 SNIFFED_PACKET_COUNT = 0
-
+load_layer('tls')
 
 def _valid_file(file) -> str:
     match = bool(re.match(r"\b(\S)+.csv\b", file) and \
@@ -62,7 +62,7 @@ def _online(session):
 
     print("Capturing packets from `{}` interface...".format(user_choice))
 
-    return AsyncSniffer(iface=user_choice, filter='port 443', count=SNIFFED_PACKET_COUNT, prn=None, session=session)
+    return AsyncSniffer(iface=user_choice, filter='tcp port 443', count=SNIFFED_PACKET_COUNT, prn=None, session=session)
 
 
 def main():
