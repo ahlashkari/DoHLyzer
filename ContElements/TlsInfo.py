@@ -194,7 +194,8 @@ class TlsInfo:
             'client_cipher_suit' : client_cipher_suit,
             'client_hello_msglen' : client_hello_msglen,
             'lifetime' : lifetime,
-            'compr' : compr
+            'compr' : compr,
+            'psk_key_exch' : psk_key_exch
         }
 
     def _cipher_dict(self):
