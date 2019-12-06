@@ -86,6 +86,7 @@ class Flow:
             'ServerCipherSuit' : tls.server_cipher_suit(),
             'ServerHelloMessageLength' : tls.server_hello_msglen(),
             'SessionLifetime' : tls.session_lifetime(),
+            'Compression' : tls.compression(),
             'RenegotiationExt' : tls.renogotiation_ext(),
             'SupportedSh' : tls.supported_version_sh_ext(),
             'AlpnExt' : tls.alpn_ext(),

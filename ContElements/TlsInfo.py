@@ -28,6 +28,9 @@ class TlsInfo:
     def session_lifetime(self):
         return self._tls_packet_loop().get('lifetime')
 
+    def compression(self):
+        return self._tls_packet_loop().get('compr')
+
     #TODO: Add documentation to functions
     def renogotiation_ext(self):
         return self._tls_packet_loop().get('renegotiation')
@@ -95,6 +98,7 @@ class TlsInfo:
         server_name = 0
         app_data = 0
         lifetime = 0
+        compr = 0
         master_secret = 0
         supported_groups = 0
         supported_point_format = 0
@@ -135,6 +139,8 @@ class TlsInfo:
                     supported_point_format = 1
                 if TLS_Ext_SessionTicket in packet:
                     ext_session_ticket = 1
+                    compr =  [self._ec_point().get(comp) for comp \
+                    in packet[TLS_Ext_SupportedPointFormat].ecpl]
                 if TLS_Ext_CSR in packet:
                     ext_csr = 1
                 if TLS_Ext_KeyShare_CH in packet:
@@ -187,7 +193,8 @@ class TlsInfo:
             'server_hello_msglen' : server_hello_msglen, 
             'client_cipher_suit' : client_cipher_suit,
             'client_hello_msglen' : client_hello_msglen,
-            'lifetime' : lifetime
+            'lifetime' : lifetime,
+            'compr' : compr
         }
 
     def _cipher_dict(self):
@@ -539,3 +546,11 @@ class TlsInfo:
             0xc0af: 'ECDHE_ECDSA_WITH_AES_256_CCM_8',
         }
         return cipher_dict
+
+    def _ec_point(self):
+        ec_point = {
+            0x00: 'uncompressed',
+            0x01: 'ansiX962_compressed_prime',
+            0x02: 'ansiX962_compressed_char2',
+        }
+        return ec_point
