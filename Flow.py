@@ -82,6 +82,7 @@ class Flow:
             'SourcePort' : self.src_port,
             'DestinationPort' : self.dest_port,
             'ClientCipherSuit' : tls.client_cipher_suit(),
+            'ServerCipherSuit' : tls.server_cipher_suit(),
             'RelativeTimeList' : packet_time.relative_time_list(),
             'PacketSizeList' : packet_length.first_fifty(),
             'DirectionList' : barks.direction_list(),

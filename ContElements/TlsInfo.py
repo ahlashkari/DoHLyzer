@@ -376,3 +376,16 @@ class TlsInfo:
                         for cipher in packet[TLSClientHello].ciphers]
 
         return client_cipher_suit
+
+    def server_cipher_suit(self):
+        feat = self.feature
+        packets = feat.packets
+        server_cipher_suit = 0
+        for packet, _ in packets:
+            if TLS in packet:
+                if packet['TLS'].type == 22:
+                    if TLSServerHello in packet:
+                    # TLSServerHello in packet:
+                        server_cipher_suit = self.cipher_dict().get(packet[TLSServerHello].cipher)
+
+        return server_cipher_suit
