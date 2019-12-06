@@ -12,7 +12,185 @@ class TlsInfo:
     """
     def __init__(self, feature):
         self.feature = feature
-    def cipher_dict(self):
+
+    def client_cipher_suit(self):
+        return self._tls_packet_loop().get('client_cipher_suit')
+
+    def client_hello_msglen(self):
+        return self._tls_packet_loop().get('client_hello_msglen')
+
+    def server_cipher_suit(self):
+        return self._tls_packet_loop().get('server_cipher_suit')
+
+    def server_hello_msglen(self):
+        return self._tls_packet_loop().get('server_hello_msglen')
+
+    def session_lifetime(self):
+        return self._tls_packet_loop().get('lifetime')
+
+    #TODO: Add documentation to functions
+    def renogotiation_ext(self):
+        return self._tls_packet_loop().get('renegotiation')
+
+    def supported_version_sh_ext(self):
+        return self._tls_packet_loop().get('supported_version_sh')
+
+    def alpn_ext(self):
+        return self._tls_packet_loop().get('alpn')
+
+    def server_name_ext(self):
+        return self._tls_packet_loop().get('server_name')
+
+    def app_data_ext(self):
+        return self._tls_packet_loop().get('app_data')
+
+    def master_secret_ext(self):
+        return self._tls_packet_loop().get('master_secret')
+
+    def supported_point_format_ext(self):
+        return self._tls_packet_loop().get('supported_point_format')
+
+    def session_ticket_ext(self):
+        return self._tls_packet_loop().get('ext_session_ticket')
+
+    def csr_ext(self):
+        return self._tls_packet_loop().get('ext_csr')
+
+    def keyshare_ch_ext(self):
+        return self._tls_packet_loop().get('keyshare_ch')
+
+    def supported_version_ch_ext(self):
+        return self._tls_packet_loop().get('supported_version_ch')
+
+    def signature_algorithm_ext(self):
+        return self._tls_packet_loop().get('signature_algorithms')
+
+    def record_size_limit_ext(self):
+        return self._tls_packet_loop().get('record_size_limit')
+
+    def padding_ext(self):
+        return self._tls_packet_loop().get('padding')
+
+    def keyshare_sh_ext(self):
+        return self._tls_packet_loop().get('keyshare_sh')
+
+    def tls_alert_ext(self):
+        return self._tls_packet_loop().get('tls_alert')
+
+    def psk_key_exch(self):
+        return self._tls_packet_loop().get('psk_key_exch')
+
+    #TODO: Expand function out so there is only one loop
+    #in this class. Rename function appropriately has helper function
+    #Have other functions call to specific values in the main loop function
+    #for clarity.
+    def _tls_packet_loop(self):
+        feat = self.feature
+        packets = feat.packets
+
+        #0 meaning we haven't seen this extension
+        renegotiation = 0 
+        supported_version_sh = 0
+        alpn = 0
+        server_name = 0
+        app_data = 0
+        lifetime = 0
+        master_secret = 0
+        supported_groups = 0
+        supported_point_format = 0
+        ext_session_ticket = 0
+        ext_csr = 0
+        keyshare_ch = 0
+        keyshare_sh = 0
+        supported_version_ch = 0
+        signature_algorithms = 0
+        record_size_limit = 0
+        padding = 0
+        psk_key_exch = 0
+        server_cipher_suit = 0
+        server_hello_msglen = 0 #There is nothing/ msglen doesn't exist
+        client_cipher_suit = []
+        client_hello_msglen = 0
+        tls_alert = 0
+
+        #Doing a bunch of loops is too inefficient
+        for packet, _ in packets:
+            if TLS in packet:
+                #1 meaning it has been seen
+                if TLS_Ext_RenegotiationInfo in packet:
+                    renegotiation = 1
+                if TLS_Ext_SupportedVersion_SH in packet:
+                    supported_version_sh = 1
+                if TLS_Ext_ALPN in packet:
+                    alpn = 1
+                if TLS_Ext_ServerName in packet:
+                    server_name = 1
+                if TLSApplicationData in packet:
+                    app_data = 1
+                if TLS_Ext_ExtendedMasterSecret in packet:
+                    master_secret = 1
+                if TLS_Ext_SupportedGroups in packet:
+                    supported_groups = 1
+                if TLS_Ext_SupportedPointFormat in packet:
+                    supported_point_format = 1
+                if TLS_Ext_SessionTicket in packet:
+                    ext_session_ticket = 1
+                if TLS_Ext_CSR in packet:
+                    ext_csr = 1
+                if TLS_Ext_KeyShare_CH in packet:
+                    keyshare_ch = 1
+                if TLS_Ext_KeyShare_SH in packet:
+                    keyshare_sh = 1
+                if TLS_Ext_SupportedVersion_CH in packet:
+                    supported_version_ch = 1
+                if TLS_Ext_SignatureAlgorithms in packet:
+                    signature_algorithms = 1
+                if TLS_Ext_RecordSizeLimit in packet:
+                    record_size_limit = 1
+                if TLS_Ext_Padding in packet:
+                    padding = 1
+                if TLSAlert in packet:
+                    tls_alert = 1
+                if TLS_Ext_PSKKeyExchangeModes in packet:
+                    psk_key_exch = 1
+                if packet['TLS'].type == 22:
+                    if TLSServerHello in packet:
+                        server_cipher_suit = self._cipher_dict().get(packet[TLSServerHello].cipher)
+                        server_hello_msglen = packet[TLSServerHello].msglen
+                    if TLSClientHello in packet:
+                        client_cipher_suit.append([cipher if self._cipher_dict().get(cipher) \
+                        is None else self._cipher_dict().get(cipher) \
+                        for cipher in packet[TLSClientHello].ciphers])
+                        client_hello_msglen = packet[TLSClientHello].msglen
+                    if TLSNewSessionTicket in packet:
+                        lifetime = packet[TLSNewSessionTicket].lifetime
+
+
+        return  {
+            'renegotiation' : renegotiation, 
+            'supported_version_sh' : supported_version_sh, 
+            'alpn' : alpn, 
+            'server_name' : server_name,
+            'app_data' : app_data, 
+            'master_secret' : master_secret, 
+            'supported_point_format' : supported_point_format,
+            'ext_session_ticket' : ext_session_ticket, 
+            'ext_csr' : ext_csr, 
+            'keyshare_ch' : keyshare_ch, 
+            'supported_version_ch' : supported_version_ch,
+            'signature_algorithms' : signature_algorithms, 
+            'record_size_limit' : record_size_limit, 
+            'padding' : padding, 
+            'tls_alert' : tls_alert,
+            'keyshare_sh' : keyshare_sh,
+            'server_cipher_suit' : server_cipher_suit,
+            'server_hello_msglen' : server_hello_msglen, 
+            'client_cipher_suit' : client_cipher_suit,
+            'client_hello_msglen' : client_hello_msglen,
+            'lifetime' : lifetime
+        }
+
+    def _cipher_dict(self):
         """Hexidecimal values of cipher suites
         with their corresponding string names.
 
@@ -361,160 +539,3 @@ class TlsInfo:
             0xc0af: 'ECDHE_ECDSA_WITH_AES_256_CCM_8',
         }
         return cipher_dict
-
-    def client_cipher_suit(self):
-        return self._tls_packet_loop().get('client_cipher_suit')
-
-    def client_hello_msglen(self):
-        return self._tls_packet_loop().get('client_hello_msglen')
-
-    def server_cipher_suit(self):
-        return self._tls_packet_loop().get('server_cipher_suit')
-
-    def server_hello_msglen(self):
-        return self._tls_packet_loop().get('server_hello_msglen')
-
-    #TODO: Add documentation to functions
-    def renogotiation_ext(self):
-        return self._tls_packet_loop().get('renegotiation')
-
-    def supported_version_sh_ext(self):
-        return self._tls_packet_loop().get('supported_version_sh')
-
-    def alpn_ext(self):
-        return self._tls_packet_loop().get('alpn')
-
-    def server_name_ext(self):
-        return self._tls_packet_loop().get('server_name')
-
-    def app_data_ext(self):
-        return self._tls_packet_loop().get('app_data')
-
-    def master_secret_ext(self):
-        return self._tls_packet_loop().get('master_secret')
-
-    def supported_point_format_ext(self):
-        return self._tls_packet_loop().get('supported_point_format')
-
-    def session_ticket_ext(self):
-        return self._tls_packet_loop().get('ext_session_ticket')
-
-    def csr_ext(self):
-        return self._tls_packet_loop().get('ext_csr')
-
-    def keyshare_ch_ext(self):
-        return self._tls_packet_loop().get('keyshare_ch')
-
-    def supported_version_ch_ext(self):
-        return self._tls_packet_loop().get('supported_version_ch')
-
-    def signature_algorithm_ext(self):
-        return self._tls_packet_loop().get('signature_algorithms')
-
-    def record_size_limit_ext(self):
-        return self._tls_packet_loop().get('record_size_limit')
-
-    def padding_ext(self):
-        return self._tls_packet_loop().get('padding')
-
-    def keyshare_sh_ext(self):
-        return self._tls_packet_loop().get('keyshare_sh')
-
-    #TODO: Expand function out so there is only one loop
-    #in this class. Rename function appropriately has helper function
-    #Have other functions call to specific values in the main loop function
-    #for clarity.
-    def _tls_packet_loop(self):
-        feat = self.feature
-        packets = feat.packets
-
-        #0 meaning we haven't seen this extension
-        renegotiation = 0 
-        supported_version_sh = 0
-        alpn = 0
-        server_name = 0
-        app_data = 0
-        master_secret = 0
-        supported_groups = 0
-        supported_point_format = 0
-        ext_session_ticket = 0
-        ext_csr = 0
-        keyshare_ch = 0
-        keyshare_sh = 0
-        supported_version_ch = 0
-        signature_algorithms = 0
-        record_size_limit = 0
-        padding = 0
-        server_cipher_suit = 0
-        server_hello_msglen = 0 #There is nothing/ msglen doesn't exist
-        client_cipher_suit = []
-        client_hello_msglen = 0
-
-
-        #Doing a bunch of loops is too inefficient
-        for packet, _ in packets:
-            if TLS in packet:
-                #1 meaning it has been seen
-                if TLS_Ext_RenegotiationInfo in packet:
-                    renegotiation = 1
-                if TLS_Ext_SupportedVersion_SH in packet:
-                    supported_version_sh = 1
-                if TLS_Ext_ALPN in packet:
-                    alpn = 1
-                if TLS_Ext_ServerName in packet:
-                    server_name = 1
-                if TLSApplicationData in packet:
-                    app_data = 1
-                if TLS_Ext_ExtendedMasterSecret in packet:
-                    master_secret = 1
-                if TLS_Ext_SupportedGroups in packet:
-                    supported_groups = 1
-                if TLS_Ext_SupportedPointFormat in packet:
-                    supported_point_format = 1
-                if TLS_Ext_SessionTicket in packet:
-                    ext_session_ticket = 1
-                if TLS_Ext_CSR in packet:
-                    ext_csr = 1
-                if TLS_Ext_KeyShare_CH in packet:
-                    keyshare_ch = 1
-                if TLS_Ext_KeyShare_SH in packet:
-                    keyshare_sh = 1
-                if TLS_Ext_SupportedVersion_CH in packet:
-                    supported_version_ch = 1
-                if TLS_Ext_SignatureAlgorithms in packet:
-                    signature_algorithms = 1
-                if TLS_Ext_RecordSizeLimit in packet:
-                    record_size_limit = 1
-                if TLS_Ext_Padding in packet:
-                    padding = 1
-                if packet['TLS'].type == 22:
-                    if TLSServerHello in packet:
-                        server_cipher_suit = self.cipher_dict().get(packet[TLSServerHello].cipher)
-                        server_hello_msglen = packet[TLSServerHello].msglen
-                    if TLSClientHello in packet:
-                        client_cipher_suit = [cipher if self.cipher_dict().get(cipher) \
-                        is None else self.cipher_dict().get(cipher) \
-                        for cipher in packet[TLSClientHello].ciphers]
-                        client_hello_msglen = packet[TLSClientHello].msglen
-
-        return  {
-            'renegotiation' : renegotiation, 
-            'supported_version_sh' : supported_version_sh, 
-            'alpn' : alpn, 
-            'server_name' : server_name,
-            'app_data' : app_data, 
-            'master_secret' : master_secret, 
-            'supported_point_format' : supported_point_format,
-            'ext_session_ticket' : ext_session_ticket, 
-            'ext_csr' : ext_csr, 
-            'keyshare_ch' : keyshare_ch, 
-            'supported_version_ch' : supported_version_ch,
-            'signature_algorithms' : signature_algorithms, 
-            'record_size_limit' : record_size_limit, 
-            'padding' : padding, 
-            'keyshare_sh' : keyshare_sh,
-            'server_cipher_suit' : server_cipher_suit,
-            'server_hello_msglen' : server_hello_msglen, 
-            'client_cipher_suit' : client_cipher_suit,
-            'client_hello_msglen' : client_hello_msglen
-        }
