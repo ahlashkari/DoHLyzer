@@ -77,39 +77,52 @@ class Flow:
 
 
         return {
+            #Basic IP information
             'SourceIP' : self.src_ip,
             'DestinationIP' : self.dest_ip,
             'SourcePort' : self.src_port,
             'DestinationPort' : self.dest_port,
+
+            #TLS information
+            #Hello exchange information
             'ClientCipherSuit' : tls.client_cipher_suit(),
-            'ClientHelloMessageLength' : tls.client_hello_msglen(),
             'ServerCipherSuit' : tls.server_cipher_suit(),
+            'ClientHelloMessageLength' : tls.client_hello_msglen(),
             'ServerHelloMessageLength' : tls.server_hello_msglen(),
-            'SessionLifetime' : tls.session_lifetime(),
+
             'Compression' : tls.compression(),
-            'RenegotiationExt' : tls.renogotiation_ext(),
-            'SupportedSh' : tls.supported_version_sh_ext(),
+            'SessionLifetime' : tls.session_lifetime(),
+            #TLS extensions
             'AlpnExt' : tls.alpn_ext(),
-            'ServerNameExt' : tls.server_name_ext(),
-            'AppData' : tls.app_data_ext(),
-            'MasterSecretExt' : tls.master_secret_ext(),
-            'SupportedPointFormatExt' : tls.supported_point_format_ext(),
-            'SessionTicketExt' : tls.session_ticket_ext(),
+            'AppDataExt' : tls.app_data_ext(),
             'CsrExt' : tls.csr_ext(),
             'KeyShareCHExt' : tls.keyshare_ch_ext(),
-            'SupportedCh' : tls.supported_version_ch_ext(),
-            'SignatureAlgorithmExt' : tls.signature_algorithm_ext(),
-            'RecordSizeLimitExt' : tls.record_size_limit_ext(),
-            'PaddingExt': tls.padding_ext(),
-            'TLSAlertExt' : tls.tls_alert_ext(),
             'KeyShareSHExt'  : tls.keyshare_sh_ext(),
+            'MasterSecretExt' : tls.master_secret_ext(),
+            'PaddingExt': tls.padding_ext(),
             'PskKeyExch' : tls.psk_key_exch(),
+            'RecordSizeLimitExt' : tls.record_size_limit_ext(),
+            'RenegotiationExt' : tls.renogotiation_ext(),
+            'ServerNameExt' : tls.server_name_ext(),
+            'SessionTicketExt' : tls.session_ticket_ext(),
+            'SignatureAlgorithmExt' : tls.signature_algorithm_ext(),
+            'SupportedGroups' : tls.sup_groups(),
+            'SupportedPointFormatExt' : tls.supported_point_format_ext(),
+            'SupportedChExt' : tls.supported_version_ch_ext(),
+            'SupportedShExt' : tls.supported_version_sh_ext(),
+            'TLSAlertExt' : tls.tls_alert_ext(),
+
+            #Information based on first 50 packets
             'RelativeTimeList' : packet_time.relative_time_list(),
             'PacketSizeList' : packet_length.first_fifty(),
             'DirectionList' : barks.direction_list(),
+
+            #Basic information from packet times
             'TimeStamp' : packet_time.get_time_stamp(),
             'Duration' : packet_time.get_duration(),
             'DurationTotal' : packet_time.get_duration_total(),
+
+            #Information based and extrapolaited from the amount of bytes
             'FlowBytesSent' : barks.get_bytes_sent(),
             'FlowSentRate' : barks.get_sent_rate(),
             'TotalBytesSent' : barks.get_total_bytes_sent(),
@@ -125,6 +138,8 @@ class Flow:
             'HeaderInOutRatio' : barks.get_header_in_out_ratio(),
             'TotalHeaderInOutRatio' : barks.get_total_header_in_out_ratio(),
             'InitialTTL' : barks.get_initial_ttl(),
+
+            #Statistical info extrapolaited and obtained from Packet lengths
             'FirstPacketSize' : packet_length.get_first_packet_length(),
             'PacketLengthVariance' : packet_length.get_var(),
             'PacketLengthStandardDeviation' : packet_length.get_std(),
@@ -135,6 +150,8 @@ class Flow:
             'PacketLengthSkewFromMedian' : packet_length.get_skew(),
             'PacketLengthSkewFromMode' : packet_length.get_skew2(),
             'PacketLengthCoefficientofVariation' : packet_length.get_cov(),
+
+            #Statistical info extrapolaited and obtained from Packet times
             'PacketTimeVariance' : packet_time.get_var(),
             'PacketTimeStandardDeviation' : packet_time.get_std(),
             'PacketTimeMean' : packet_time.get_mean(),
@@ -153,8 +170,12 @@ class Flow:
             'FlowDifferenceTimeSkewFromMedian' : time.get_skew(),
             'FlowDifferenceTimeSkewFromMode' : time.get_skew2(),
             'FlowDifferenceTimeCoefficientofVariation' : time.get_cov(),
+
+            #Information extrapolaited from the ip_addresses
             'IsGoogle' : ip.is_google(),
             'IsMalwareIP' : ip.is_bad(),
+
+            #Information about the packet flags
             'FlagTotal' : flags.get_flag_total(),
             'NullFlagCount' : flags.get_null_count(),
             'PureFINCount' : flags.get_fin_count(),
