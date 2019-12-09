@@ -15,77 +15,146 @@ class TlsInfo:
 
     #TODO: Add documentation to functions
     #Functions for getting information within various TLS fields
+    def app_data(self):
+        return self._tls_packet_loop().get('app_data')
+
+    def alpn(self):
+        return self._tls_packet_loop().get('alpn')
+
+    def client_authz(self):
+        return self._tls_packet_loop().get('client_authz')
+
+    def client_cert_type(self):
+        return self._tls_packet_loop().get('client_certificate_type')
+
+    def client_cert_url(self):
+        return self._tls_packet_loop().get('client_certificate_url')     
+
     def client_cipher_suit(self):
         return self._tls_packet_loop().get('client_cipher_suit')
-
-    def server_cipher_suit(self):
-        return self._tls_packet_loop().get('server_cipher_suit')
 
     def client_hello_msglen(self):
         return self._tls_packet_loop().get('client_hello_msglen')
 
-    def server_hello_msglen(self):
-        return self._tls_packet_loop().get('server_hello_msglen')
+    def cookie(self):
+        return self._tls_packet_loop().get('cookie')
 
     def compression(self):
         return self._tls_packet_loop().get('compr')
 
-    def session_lifetime(self):
-        return self._tls_packet_loop().get('lifetime')
+    def csr(self):
+        return self._tls_packet_loop().get('csr')
 
-    def alpn_ext(self):
-        return self._tls_packet_loop().get('alpn')
+    def early_data(self):
+        return self._tls_packet_loop().get('early_data')
 
-    def app_data_ext(self):
-        return self._tls_packet_loop().get('app_data')
+    def early_data_ind(self):
+        return self._tls_packet_loop().get('early_data_ind')
 
-    def csr_ext(self):
-        return self._tls_packet_loop().get('ext_csr')
+    def early_data_ind_ticket(self):
+        return self._tls_packet_loop().get('early_data_ind_ticket')
 
-    def keyshare_ch_ext(self):
+    def encrypt_then_mac(self):
+        return self._tls_packet_loop().get('encrypt_then_mac')
+
+    def heartbeat(self):
+        return self._tls_packet_loop().get('heartbeat')
+
+    def keyshare(self):
+        return self._tls_packet_loop().get('keyshare')
+
+    def keyshare_ch(self):
         return self._tls_packet_loop().get('keyshare_ch')
 
-    def keyshare_sh_ext(self):
+    def keyshare_sh(self):
         return self._tls_packet_loop().get('keyshare_sh')
 
-    def padding_ext(self):
+    def master_secret(self):
+        return self._tls_packet_loop().get('master_secret')
+
+    def max_frag(self):
+        return self._tls_packet_loop().get('max_frag')
+
+    def ocsp(self):
+        return self._tls_packet_loop().get('ocsp')
+
+    def padding(self):
         return self._tls_packet_loop().get('padding')
+
+    def post_handshake_auth(self):
+        return self._tls_packet_loop().get('post_handshake_auth')
+
+    def pre_shared_key(self):
+        return self._tls_packet_loop().get('pre_shared_key')
 
     def psk_key_exch(self):
         return self._tls_packet_loop().get('psk_key_exch')
 
-    def master_secret_ext(self):
-        return self._tls_packet_loop().get('master_secret')
-
-    def record_size_limit_ext(self):
-
+    def record_size_limit(self):
         return self._tls_packet_loop().get('record_size_limit')
-    def renogotiation_ext(self):
+
+    def renogotiation(self):
         return self._tls_packet_loop().get('renegotiation')
 
-    def server_name_ext(self):
+    def server_authz(self):
+        return self._tls_packet_loop().get('server_authz')
+
+    def server_cert_type(self):
+        return self._tls_packet_loop().get('server_certificate_type')
+
+    def server_cipher_suit(self):
+        return self._tls_packet_loop().get('server_cipher_suit')
+
+    def server_hello_msglen(self):
+        return self._tls_packet_loop().get('server_hello_msglen')
+
+    def server_name(self):
         return self._tls_packet_loop().get('server_name')
 
-    def session_ticket_ext(self):
-        return self._tls_packet_loop().get('ext_session_ticket')
+    def session_ticket(self):
+        return self._tls_packet_loop().get('session_ticket')
 
-    def signature_algorithm_ext(self):
+    def session_lifetime(self):
+        return self._tls_packet_loop().get('lifetime')
+
+    def signature_algorithm(self):
         return self._tls_packet_loop().get('signature_algorithms')
 
+    def signature_algorithm_cert(self):
+        return self._tls_packet_loop().get('signature_algorithms_cert')
+ 
     def sup_groups(self):
         return self._tls_packet_loop().get('supported_groups')
 
-    def supported_point_format_ext(self):
+    def supported_elip(self):
+        return self._tls_packet_loop().get('supported_elliptic')
+
+    def supported_point_format(self):
         return self._tls_packet_loop().get('supported_point_format')
 
-    def supported_version_ch_ext(self):
+    def supported_version(self):
+        return self._tls_packet_loop().get('supported_version')
+
+    def supported_version_ch(self):
         return self._tls_packet_loop().get('supported_version_ch')
 
-    def supported_version_sh_ext(self):
+    def supported_version_sh(self):
         return self._tls_packet_loop().get('supported_version_sh')
 
-    def tls_alert_ext(self):
+    def ticket_early_data_info(self):
+        return self._tls_packet_loop().get('early_data_ticket')
+
+    def tls_alert(self):
         return self._tls_packet_loop().get('tls_alert')
+
+    def truncated_hmac(self):
+        return self._tls_packet_loop().get('truncated_hmac')
+
+    def trusted_ca(self):
+        return self._tls_packet_loop().get('trusted_ca')
+
+    def user_mapping(self):
+        return self._tls_packet_loop().get('user_mapping')
 
     #TODO: Expand function out so there is only one loop
     #in this class. Rename function appropriately has helper function
@@ -107,35 +176,51 @@ class TlsInfo:
 
         alpn = 0
         app_data = 0
-        ext_csr = 0
+        client_authz = 0
+        client_certificate_type = 0
+        client_certificate_url = 0
+        cookie = 0
+        csr = 0
+        early_data = 0
+        early_data_ind = 0
+        early_data_ind_ticket = 0
+        early_data_ticket = 0
+        encrypt_then_mac = 0
+        heartbeat = 0
+        keyshare = 0
         keyshare_ch = 0
         keyshare_sh = 0
         master_secret = 0
+        max_frag = 0
+        ocsp = 0
         padding = 0
+        post_handshake_auth = 0
+        pre_shared_key = 0
         psk_key_exch = 0
         record_size_limit = 0
         renegotiation = 0
+        server_authz = 0
         server_name = 0
-        ext_session_ticket = 0
+        server_certificate_type = 0
+        session_ticket = 0
         signature_algorithms = 0
+        signature_algorithms_cert = 0
+        supported_elliptic = 0
         supported_groups = 0
         supported_point_format = 0
+        supported_version = 0
         supported_version_ch = 0
         supported_version_sh = 0
+        ticket_early_data_info = 0
         tls_alert = 0
+        truncated_hmac = 0
+        trusted_ca = 0
+        user_mapping = 0
 
         #Doing a bunch of loops is too inefficient
         for packet, _ in packets:
             if TLS in packet:
                 #1 meaning it has been seen
-                if TLS_Ext_ALPN in packet:
-                    alpn = 1
-
-                if TLSApplicationData in packet:
-                    app_data = 1
-
-                if TLS_Ext_RenegotiationInfo in packet:
-                    renegotiation = 1
 
                 if packet['TLS'].type == 22:
                     if TLSServerHello in packet:
@@ -151,16 +236,49 @@ class TlsInfo:
                     if TLSNewSessionTicket in packet:
                         lifetime = packet[TLSNewSessionTicket].lifetime
 
-                if TLS_Ext_CSR in packet:
-                    ext_csr = 1
+                if TLS_Ext_ALPN in packet:
+                    alpn = 1
 
-                if TLS_Ext_SessionTicket in packet:
-                    ext_session_ticket = 1
-                    compr =  [self._ec_point().get(comp) for comp \
-                    in packet[TLS_Ext_SupportedPointFormat].ecpl]
+                if TLSApplicationData in packet:
+                    app_data = 1
+
+                if TLS_Ext_ClientAuthz in packet:
+                    client_authz = 1
+
+                if TLS_Ext_ClientCertType in packet:
+                    client_certificate_type = 1
+
+                if TLS_Ext_ClientCertURL in packet:
+                    client_certificate_url = 1
+
+                if TLS_Ext_Cookie in packet:
+                    cookie = 1
+
+                if TLS_Ext_CSR in packet:
+                    csr = 1
+
+                if TLS_Ext_EarlyDataIndication in packet:
+                    early_data = 1
+
+                if TLS_Ext_EarlyDataIndicationTicket in packet:
+                    early_data_ticket = 1
+
+                if TLS_Ext_EncryptThenMAC in packet:
+                    encrypt_then_mac = 1
 
                 if TLS_Ext_ExtendedMasterSecret in packet:
                     master_secret = 1
+
+                if TLS_Ext_Heartbeat in packet:
+                    heartbeat = 1
+
+                if TLS_Ext_SessionTicket in packet:
+                    session_ticket = 1
+                    compr =  [self._ec_point().get(comp) for comp \
+                    in packet[TLS_Ext_SupportedPointFormat].ecpl]
+
+                if TLS_Ext_KeyShare in packet:
+                    keyshare = 1
 
                 if TLS_Ext_KeyShare_CH in packet:
                     keyshare_ch = 1
@@ -168,8 +286,20 @@ class TlsInfo:
                 if TLS_Ext_KeyShare_SH in packet:
                     keyshare_sh = 1
 
+                if TLS_Ext_MaxFragLen in packet:
+                   max_frag = 1
+
+                if OCSPStatusRequest in packet:
+                    ocsp = 1
+
                 if TLS_Ext_Padding in packet:
                     padding = 1
+
+                if TLS_Ext_PostHandshakeAuth in packet:
+                    post_handshake_auth = 1
+
+                if TLS_Ext_PreSharedKey in packet:
+                    pre_shared_key = 1
 
                 if TLS_Ext_PSKKeyExchangeModes in packet:
                     psk_key_exch = 1
@@ -177,11 +307,26 @@ class TlsInfo:
                 if TLS_Ext_RecordSizeLimit in packet:
                     record_size_limit = 1
 
+                if TLS_Ext_RenegotiationInfo in packet:
+                    renegotiation = 1
+
+                if TLS_Ext_ServerCertType in packet:
+                    server_certificate_type = 1
+
+                if TLS_Ext_ServerName in packet:
+                    server_name = 1
+
+                if TLS_Ext_ServerAuthz in packet:
+                    server_authz = 1
+
                 if TLS_Ext_SignatureAlgorithms in packet:
                     signature_algorithms = 1
 
-                if TLSAlert in packet:
-                    tls_alert = 1
+                if TLS_Ext_SignatureAlgorithmsCert in packet:
+                    signature_algorithms_cert = 1
+
+                if TLS_Ext_SupportedEllipticCurves in packet:
+                    supported_elliptic = 1
 
                 if TLS_Ext_SupportedGroups in packet:
                     supported_groups = 1
@@ -189,8 +334,8 @@ class TlsInfo:
                 if TLS_Ext_SupportedPointFormat in packet:
                     supported_point_format = 1
 
-                if TLS_Ext_ServerName in packet:
-                    server_name = 1
+                if TLS_Ext_SupportedVersions in packet:
+                    supported_version = 1
 
                 if TLS_Ext_SupportedVersion_CH in packet:
                     supported_version_ch = 1
@@ -198,39 +343,73 @@ class TlsInfo:
                 if TLS_Ext_SupportedVersion_SH in packet:
                     supported_version_sh = 1
 
+                if TLS_Ext_TicketEarlyDataInfo in packet:
+                    ticket_early_data_info = 1
+
+                if TLSAlert in packet:
+                    tls_alert = 1
+
+                if TLS_Ext_TruncatedHMAC in packet:
+                    truncated_hmac = 1
+
+                if TLS_Ext_TrustedCAInd in packet:
+                    trusted_ca = 1
+
+                if TLS_Ext_UserMapping in packet:
+                    user_mapping = 1
+
         return  {
-            'alpn' : alpn, 
-            'app_data' : app_data, 
-            'renegotiation' : renegotiation,
 
             'client_cipher_suit' : client_cipher_suit,
-            'client_hello_msglen' : client_hello_msglen,
-
-            'compr' : compr,
-            'master_secret' : master_secret,
-
-            'ext_csr' : ext_csr, 
-            'ext_session_ticket' : ext_session_ticket,
-
-            'keyshare_ch' : keyshare_ch, 
-            'keyshare_sh' : keyshare_sh,
-
-            'lifetime' : lifetime,
-            'padding' : padding, 
-            'psk_key_exch' : psk_key_exch,
-            'record_size_limit' : record_size_limit, 
-            'signature_algorithms' : signature_algorithms, 
-            'tls_alert' : tls_alert,
-
-            'server_name' : server_name,
             'server_cipher_suit' : server_cipher_suit,
+            'client_hello_msglen' : client_hello_msglen,
             'server_hello_msglen' : server_hello_msglen,
 
+            'compr' : compr,
+            'lifetime' : lifetime,
+
+            'alpn' : alpn, #application_layer_protocol_negotiation
+            'app_data' : app_data, 
+            'csr' : csr,
+            'client_authz' : client_authz,
+            'client_certificate_type' : client_certificate_type,
+            'client_certificate_url' : client_certificate_url,
+            'cookie' : cookie,
+            'early_data' : early_data,
+            'early_data_ind' : early_data_ind,
+            'early_data_ind_ticket' : early_data_ind_ticket,
+            'early_data_ticket' : early_data_ticket,
+            'encrypt_then_mac' : encrypt_then_mac,
+            'heartbeat' : heartbeat,
+            'keyshare' : keyshare,
+            'keyshare_ch' : keyshare_ch, 
+            'keyshare_sh' : keyshare_sh,
+            'master_secret' : master_secret,
+            'max_frag' : max_frag,
+            'ocsp' : ocsp,
+            'padding' : padding,
+            'post_handshake_auth' : post_handshake_auth,
+            'pre_shared_key' : pre_shared_key,
+            'psk_key_exch' : psk_key_exch,
+            'record_size_limit' : record_size_limit, 
+            'renegotiation' : renegotiation,
+            'server_certificate_type' : server_certificate_type,
+            'server_name' : server_name,
+            'server_authz' : server_authz,
+            'session_ticket' : session_ticket,
+            'signature_algorithms' : signature_algorithms,
+            'signature_algorithms_cert' : signature_algorithms_cert,
+            'supported_elliptic' : supported_elliptic, 
             'supported_groups' : supported_groups,
             'supported_point_format' : supported_point_format,
-
+            'supported_version' : supported_version,
             'supported_version_ch' : supported_version_ch,
-            'supported_version_sh' : supported_version_sh, 
+            'supported_version_sh' : supported_version_sh,
+            'ticket_early_data_info' : ticket_early_data_info, 
+            'tls_alert' : tls_alert,
+            'truncated_hmac' : truncated_hmac,
+            'trusted_ca' : trusted_ca,
+            'user_mapping' : user_mapping,
         }
 
     def _cipher_dict(self):
