@@ -106,10 +106,11 @@ class FlowSession(DefaultSession):
         print('Garbage Collection Began. Flows = {}'.format(len(self.flows)))
         keys = list(self.flows.keys())
         for k in keys:
-            flow = self.flows.pop(k)
+            flow = self.flows.get(k)
             if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
                 if self.csv_line == 0:
                     csv_writer.writerow(flow.get_data().keys())
                 csv_writer.writerow(flow.get_data().values())
                 self.csv_line += 1
+                del self.flows[k]
         print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))
