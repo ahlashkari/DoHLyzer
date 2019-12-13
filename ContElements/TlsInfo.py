@@ -561,9 +561,16 @@ class TlsInfo:
                         #     server_authz = 1
 
                     if TLSClientHello in packet:
-                        client_cipher_suit.append([cipher if CIPHER.get(cipher) \
-                                                             is None else CIPHER.get(cipher) \
-                                                   for cipher in packet[TLSClientHello].ciphers])
+                        #Making sure the list is not empty
+                        #Accounting for NoneType errors
+                        if packet[TLSClientHello].ciphers is not None:
+                            cipher_list = [cipher for cipher in packet[TLSClientHello].ciphers if cipher is not None]
+                        client_cipher_suit = [cipher if CIPHER.get(cipher)
+                                            is None else CIPHER.get(cipher) if cipher is not None
+                                            else 0
+                                            for cipher in cipher_list
+                                            if (packet[TLSClientHello] is not None and
+                                            packet is not None)]
                         client_hello_msglen = packet[TLSClientHello].msglen
 
                         if TLS_Ext_ALPN in packet:
