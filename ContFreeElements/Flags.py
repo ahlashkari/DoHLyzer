@@ -4,12 +4,13 @@ class Flags:
     """This class extracts features related to the TCP flags.
 
     """
+
     def __init__(self, feature):
         self.feature = feature
         self.flag_dict = {}
         self.synfin = 0
 
-    def _get_flags(self) -> list:
+    def _get_flags(self):
         """The function returns a list of flag values as a sequence.
 
         Returns:
@@ -19,11 +20,10 @@ class Flags:
         feat = self.feature
         tcp_flags = feat.packet['TCP'].flags
         packets = feat.packets
-        flag_list = list(tcp_flags for packet in packets)
+        flag_list = [tcp_flags for packet in packets]
         return flag_list
 
-
-    #This method is left in but commented out for debbugging purposes
+    # This method is left in but commented out for debbugging purposes
     # def get_flags(self) -> str:
     #     """This function returns the letter values of the sequence of strings
 
@@ -37,7 +37,7 @@ class Flags:
 
     #     return flag_str
 
-    def get_flag_total(self) -> int:
+    def get_flag_total(self):
         """This feature counts the total number of flags in a flow.
 
         Returns:
@@ -46,7 +46,7 @@ class Flags:
         """
         count = 0
 
-        self.flag_dict.update({'NULL' : [0b00000000, 0]})
+        self.flag_dict.update({'NULL': [0b00000000, 0]})
         emb_flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR']
         self.flag_dict.update({emb_flags[i]: [1 << i, 0] for i in range(8)})
 
@@ -54,65 +54,44 @@ class Flags:
 
         for curr_flag in flags:
 
-            #bitwise comparisons
+            # bitwise comparisons
 
-            if curr_flag == (self.flag_dict['NULL'][0]):
+            if curr_flag == (self.flag_dict.get('NULL')[0]):
+                self.flag_dict.get('NULL')[1] += 1
 
-                self.flag_dict['NULL'][1] += 1
+            if self.flag_dict.get('FIN')[0] == (self.flag_dict.get('FIN')[0] & curr_flag):
+                self.flag_dict.get('FIN')[1] += 1
 
+            if self.flag_dict.get('SYN')[0] == (self.flag_dict.get('SYN')[0] & curr_flag):
+                self.flag_dict.get('SYN')[1] += 1
 
-            if self.flag_dict['FIN'][0] == (self.flag_dict['FIN'][0] & curr_flag):
+            if self.flag_dict.get('RST')[0] == (self.flag_dict.get('RST')[0] & curr_flag):
+                self.flag_dict.get('RST')[1] += 1
 
-                self.flag_dict['FIN'][1] += 1
+            if self.flag_dict.get('PSH')[0] == (self.flag_dict.get('PSH')[0] & curr_flag):
+                self.flag_dict.get('PSH')[1] += 1
 
+            if self.flag_dict.get('ACK')[0] == (self.flag_dict.get('ACK')[0] & curr_flag):
+                self.flag_dict.get('ACK')[1] += 1
 
-            if self.flag_dict['SYN'][0] == (self.flag_dict['SYN'][0] & curr_flag):
+            if self.flag_dict.get('URG')[0] == (self.flag_dict.get('URG')[0] & curr_flag):
+                self.flag_dict.get('URG')[1] += 1
 
-                self.flag_dict['SYN'][1] += 1
+            if self.flag_dict.get('ECE')[0] == (self.flag_dict.get('ECE')[0] & curr_flag):
+                self.flag_dict.get('ECE')[1] += 1
 
+            if self.flag_dict.get('CWR')[0] == (self.flag_dict.get('CWR')[0] & curr_flag):
+                self.flag_dict.get('CWR')[1] += 1
 
-            if self.flag_dict['RST'][0] == (self.flag_dict['RST'][0] & curr_flag):
-
-                self.flag_dict['RST'][1] += 1
-
-
-            if self.flag_dict['PSH'][0] == (self.flag_dict['PSH'][0] & curr_flag):
-
-                self.flag_dict['PSH'][1] += 1
-
-
-            if self.flag_dict['ACK'][0] == (self.flag_dict['ACK'][0] & curr_flag):
-
-                self.flag_dict['ACK'][1] += 1
-
-
-            if self.flag_dict['URG'][0] == (self.flag_dict['URG'][0] & curr_flag):
-
-                self.flag_dict['URG'][1] += 1
-
-
-            if self.flag_dict['ECE'][0] == (self.flag_dict['ECE'][0] & curr_flag):
-
-                self.flag_dict['ECE'][1] += 1
-
-
-            if self.flag_dict['CWR'][0] == (self.flag_dict['CWR'][0] & curr_flag):
-
-                self.flag_dict['CWR'][1] += 1
-
-
-            if (self.flag_dict['SYN'][0] | self.flag_dict['FIN'][0]) == \
-                 ((self.flag_dict['SYN'][0] | self.flag_dict['FIN'][0]) & curr_flag):
-
+            if (self.flag_dict.get('SYN')[0] | self.flag_dict.get('FIN')[0]) == \
+                    ((self.flag_dict.get('SYN')[0] | self.flag_dict.get('FIN')[0]) & curr_flag):
                 self.synfin += 1
-
 
             count += 1
 
         return count
 
-
-    def get_null_count(self) -> int:
+    def get_null_count(self):
         """Obtains the number of null flags
 
         Returns:
@@ -122,10 +101,9 @@ class Flags:
 
         return self.flag_dict['NULL'][1]
 
-
-    #This group of methods represent
-    #the single TCP flags
-    def get_fin_count(self) -> int:
+    # This group of methods represent
+    # the single TCP flags
+    def get_fin_count(self):
         """This feature counts the number of pure FIN flags in a flow.
 
         Returns:
@@ -137,7 +115,7 @@ class Flags:
 
         return count
 
-    def get_emb_fin_count(self) -> int:
+    def get_emb_fin_count(self):
         """Obtains the number of null flags
 
         Returns:
@@ -145,10 +123,9 @@ class Flags:
 
         """
 
-
         return self.flag_dict['FIN'][1]
 
-    def get_syn_count(self) -> int:
+    def get_syn_count(self):
         """This feature counts the number of pure SYN flags
          in a flow.
 
@@ -171,8 +148,7 @@ class Flags:
 
         return self.flag_dict['SYN'][1]
 
-
-    def get_rst_count(self) -> int:
+    def get_rst_count(self):
         """This feature counts the number of pure RST flags
          in a flow.
 
@@ -185,7 +161,7 @@ class Flags:
 
         return count
 
-    def get_emb_rst_count(self) -> int:
+    def get_emb_rst_count(self):
         """Obtains the number of rst flags
 
         Returns:
@@ -195,7 +171,7 @@ class Flags:
 
         return self.flag_dict['RST'][1]
 
-    def get_psh_count(self) -> int:
+    def get_psh_count(self):
         """This feature counts the number of pure PSH flags
          in a flow.
 
@@ -208,7 +184,7 @@ class Flags:
 
         return count
 
-    def get_emb_psh_count(self) -> int:
+    def get_emb_psh_count(self):
         """Obtains the number of rst flags
 
         Returns:
@@ -218,8 +194,7 @@ class Flags:
 
         return self.flag_dict['PSH'][1]
 
-
-    def get_ack_count(self) -> int:
+    def get_ack_count(self):
         """This feature counts the number of pure ACK flags
          in a flow.
 
@@ -232,7 +207,7 @@ class Flags:
 
         return count
 
-    def get_emb_ack_count(self) -> int:
+    def get_emb_ack_count(self):
         """Obtains the number of ack flags
 
         Returns:
@@ -240,11 +215,9 @@ class Flags:
 
         """
 
-
         return self.flag_dict['ACK'][1]
 
-
-    def get_urg_count(self) -> int:
+    def get_urg_count(self):
         """This feature counts the number of pure URG flags
          in a flow.
 
@@ -257,7 +230,7 @@ class Flags:
 
         return count
 
-    def get_emb_urg_count(self) -> int:
+    def get_emb_urg_count(self):
         """Obtains the number of urg flags
 
         Returns:
@@ -267,8 +240,7 @@ class Flags:
 
         return self.flag_dict['URG'][1]
 
-
-    def get_ece_count(self) -> int:
+    def get_ece_count(self):
         """This feature counts the number of pure ECE flags
          in a flow.
 
@@ -281,7 +253,7 @@ class Flags:
 
         return count
 
-    def get_emb_ece_count(self) -> int:
+    def get_emb_ece_count(self):
         """Obtains the number of ece flags
 
         Returns:
@@ -291,8 +263,7 @@ class Flags:
 
         return self.flag_dict['ECE'][1]
 
-
-    def get_cwr_count(self) -> int:
+    def get_cwr_count(self):
         """This feature counts the number of pure CWR flags
          in a flow.
 
@@ -305,7 +276,7 @@ class Flags:
 
         return count
 
-    def get_emb_cwr_count(self) -> int:
+    def get_emb_cwr_count(self):
         """Obtains the number of cwr flags
 
         Returns:
@@ -315,10 +286,9 @@ class Flags:
 
         return self.flag_dict['CWR'][1]
 
-
-    #This group of methods represent some common
-    #legal and illegal TCP flag combinations
-    def get_synfin_count(self) -> int:
+    # This group of methods represent some common
+    # legal and illegal TCP flag combinations
+    def get_synfin_count(self):
         """This feature counts the number of syn fin flags in a flow.
 
             note:
@@ -334,7 +304,7 @@ class Flags:
 
         return count
 
-    def get_synack_count(self) -> int:
+    def get_synack_count(self):
         """This feature counts the number of SYN/ACK flags in a flow.
 
         Returns:
@@ -346,7 +316,7 @@ class Flags:
 
         return count
 
-    def get_rstack_count(self) -> int:
+    def get_rstack_count(self):
         """This feature counts the number of RST ACK flags in a flow.
 
         Returns:
@@ -358,7 +328,7 @@ class Flags:
 
         return count
 
-    def get_pshack_count(self) -> int:
+    def get_pshack_count(self):
         """This feature counts the number of Push ACK flags in a flow.
 
         Returns:
@@ -370,7 +340,7 @@ class Flags:
 
         return count
 
-    def get_contain_finsyn_count(self) -> int:
+    def get_contain_finsyn_count(self):
         """This feature counts the number of fin syn counts
         that are embedded into TCP traffic with added flags
         to cloak the syn/fin combo

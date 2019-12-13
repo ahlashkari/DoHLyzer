@@ -23,7 +23,7 @@ class FlowSession(DefaultSession):
         self.flows = {}
         self.csv_line = 0
 
-        file = 'output.csv'
+        file = 'output2.csv'
         output = open(file, 'w')
         self.csv_writer = csv.writer(output)
 
@@ -90,13 +90,12 @@ class FlowSession(DefaultSession):
         flow.add_packet(packet, direction)
         # process = threading.Thread(target = self.garbage_collect, \
         # args = (packet.time, self.csv_writer))
-       
+
         # process.start()
         # process.join()
 
         if self.packets_count % 10000 == 0:
             self.garbage_collect(packet.time, self.csv_writer)
-
 
     def get_flows(self) -> list:
         return self.flows.values()
@@ -107,10 +106,11 @@ class FlowSession(DefaultSession):
         keys = list(self.flows.keys())
         for k in keys:
             flow = self.flows.get(k)
+            data = flow.get_data()
             if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
                 if self.csv_line == 0:
-                    csv_writer.writerow(flow.get_data().keys())
-                csv_writer.writerow(flow.get_data().values())
+                    csv_writer.writerow(data.keys())
+                csv_writer.writerow(data.values())
                 self.csv_line += 1
                 del self.flows[k]
         print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))

@@ -2,6 +2,7 @@
 
 from enum import Enum, auto
 
+
 class PacketDirection(Enum):
     """ Packet Direction creates constants for the direction of the packets.
     
@@ -12,4 +13,3 @@ class PacketDirection(Enum):
 
     FORWARD = auto()
     REVERSE = auto()
-    

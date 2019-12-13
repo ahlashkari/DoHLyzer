@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-#for type hinting
+# for type hinting
 from typing import List
 
-#For math stuff
+# For math stuff
 import numpy
 from scipy import stats as stat
+
 
 class PacketLength:
     """This class extracts features related to the Packet Lengths.
@@ -21,18 +22,17 @@ class PacketLength:
     def __init__(self, feature):
         self.feature = feature
 
-    def get_packet_length(self) -> List[int]:
+    def get_packet_length(self) -> list:
         """Creates a list of packet lengths.
  
         Returns:
             packet_lengths (List[int]):
 
         """
-        packet_lengths = []
-        for packet, _ in self.feature.packets:
-            packet_lengths.append(len(packet))
+        # packet_lengths = []
+        # packet_lengths.append(len(packet))
 
-        return packet_lengths
+        return [len(packet) for packet, _ in self.feature.packets]
 
     def first_fifty(self) -> list:
         """Returns first 50 packet sizes
@@ -41,20 +41,8 @@ class PacketLength:
             List of Packet Sizes
 
         """
-        return  self.get_packet_length()[:50]
+        return self.get_packet_length()[:50]
 
-    def get_first_packet_length(self) -> int:
-        """Obtains the size of the first packet.
-
-        Returns:
-            int: The size of the first packet
-
-        """
-
-        feat = self.feature
-
-        return [len(packet) for packet, _ in  \
-            feat.packets if packet.src][0]
 
     def get_var(self) -> float:
         """The variation of packet lengths in a network Feature.
@@ -94,7 +82,6 @@ class PacketLength:
             float: The cummulative total of packet length means.
         """
 
-
         if PacketLength.mean_count == 0:
             PacketLength.grand_total = self.get_mean() - self.get_mean()
         else:
@@ -112,9 +99,10 @@ class PacketLength:
 
         """
 
-        PacketLength.grand_mean = self._get_grand_total()/(PacketLength.mean_count-1)
+        PacketLength.grand_mean = self._get_grand_total() / (PacketLength.mean_count - 1)
 
         return PacketLength.grand_mean
+
     def get_median(self) -> float:
         """The median of packet lengths in a network flow.
 
@@ -146,12 +134,12 @@ class PacketLength:
         """
         mean = self.get_mean()
         median = self.get_median()
-        dif = 3*(mean - median)
+        dif = 3 * (mean - median)
         std = self.get_std()
         skew = -10
 
         if std != 0:
-            skew = dif/std
+            skew = dif / std
 
         return skew
 
@@ -169,7 +157,7 @@ class PacketLength:
         skew2 = -10
 
         if std != 0:
-            skew2 = dif/std
+            skew2 = dif / std
 
         return skew2
 
@@ -182,6 +170,6 @@ class PacketLength:
         """
         cov = -1
         if self.get_mean() != 0:
-            cov = self.get_std()/self.get_mean()
-        
+            cov = self.get_std() / self.get_mean()
+
         return cov

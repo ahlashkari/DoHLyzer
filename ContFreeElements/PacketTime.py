@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-#for type hinting
+# for type hinting
 from typing import List
 
 from decimal import DecimalException
 from datetime import datetime
 
-#For math stuff
+# For math stuff
 import numpy
 from scipy import stats as stat
-
 
 
 class PacketTime:
@@ -21,7 +20,7 @@ class PacketTime:
         grand_total(float): The cummulative total of the means.
         duration_total(float): The cummulative total of the durations.
 
-    """    
+    """
     count = 0
     grand_total = 0
     duration_total = 0
@@ -30,7 +29,7 @@ class PacketTime:
         self.flow = flow
         PacketTime.count += 1
 
-    def _get_packet_times(self) -> list:
+    def _get_packet_times(self):
         """Gets a list of the times of the packets on a flow
 
         Returns:
@@ -40,10 +39,9 @@ class PacketTime:
         packet_times = [self.flow.packet.time for self.flow.packet, _ in self.flow.packets]
         return packet_times
 
-    def relative_time_list(self) -> list:
+    def relative_time_list(self):
         relative_time_list = []
-        packet_times = self._get_packet_times(
-            )
+        packet_times = self._get_packet_times()
         for index, time in enumerate(packet_times):
             if index == 0:
                 relative_time_list.append(0)
@@ -67,7 +65,7 @@ class PacketTime:
         date_time = datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
         return date_time
 
-    def get_duration(self) -> float:
+    def get_duration(self):
         """Calculates the duration of a network flow.
 
         Returns:
@@ -77,7 +75,7 @@ class PacketTime:
 
         return max(self._get_packet_times()) - min(self._get_packet_times())
 
-    def get_duration_total(self) -> float:
+    def get_duration_total(self):
         """Adds together all the duration values on a given run.
 
         Returns:
@@ -92,7 +90,7 @@ class PacketTime:
 
         return PacketTime.duration_total
 
-    def get_var(self) -> float:
+    def get_var(self):
         """Calculates the variation of packet times in a network flow.
 
         Returns:
@@ -101,16 +99,16 @@ class PacketTime:
         """
         return numpy.var(self._get_packet_times())
 
-    def get_std(self) -> float:
+    def get_std(self):
         """Calculates the standard deviation of packet times in a network flow.
 
-        Rens:
+        Returns:
             float: The standard deviation of packet times.
 
         """
         return numpy.sqrt(self.get_var())
 
-    def get_mean(self) -> float:
+    def get_mean(self):
         """Calculates the mean of packet times in a network flow.
 
         Returns:
@@ -123,7 +121,7 @@ class PacketTime:
 
         return mean
 
-    def _get_grand_total(self) -> None:
+    def _get_grand_total(self):
         """Calculates the overall total of packet times in a network flow.
 
         Returns:
@@ -138,7 +136,7 @@ class PacketTime:
 
         return PacketTime.grand_total
 
-    def get_grand_mean(self) -> float:
+    def get_grand_mean(self):
         """Calculates the cummulative mean of packet times in a network flow.
 
         Returns:
@@ -147,13 +145,13 @@ class PacketTime:
 
         """
         try:
-            PacketTime.grand_mean = self._get_grand_total()/(PacketTime.count-1)
+            PacketTime.grand_mean = self._get_grand_total() / (PacketTime.count - 1)
         except DecimalException:
             PacketTime.grand_mean = -1
 
         return PacketTime.grand_mean
 
-    def get_median(self) -> float:
+    def get_median(self):
         """Calculates the median of packet times in a network flow.
 
         Returns:
@@ -162,7 +160,7 @@ class PacketTime:
         """
         return numpy.median(self._get_packet_times())
 
-    def get_mode(self) -> float:
+    def get_mode(self):
         """The mode of packet times in a network flow.
 
         Returns:
@@ -175,7 +173,7 @@ class PacketTime:
 
         return mode
 
-    def get_skew(self) -> float:
+    def get_skew(self):
         """Calculates the skew of packet times in a network flow using the median.
 
         Returns:
@@ -184,16 +182,16 @@ class PacketTime:
         """
         mean = self.get_mean()
         median = self.get_median()
-        dif = 3*(mean - median)
+        dif = 3 * (mean - median)
         std = self.get_std()
         skew = -10
 
         if std != 0:
-            skew = dif/std
+            skew = dif / std
 
         return skew
 
-    def get_skew2(self) -> float:
+    def get_skew2(self):
         """Calculates the skew of the packet times ina network flow using the mode.
 
         Returns:
@@ -207,11 +205,11 @@ class PacketTime:
         skew2 = -10
 
         if std != 0:
-            skew2 = dif/float(std)
+            skew2 = dif / float(std)
 
         return skew2
 
-    def get_cov(self) -> float:
+    def get_cov(self):
         """Calculates the coefficient of variance of packet times in a network flow.
 
         Returns:
@@ -220,6 +218,6 @@ class PacketTime:
         """
         cov = -1
         if self.get_mean() != 0:
-            cov = self.get_std()/self.get_mean()
+            cov = self.get_std() / self.get_mean()
 
         return cov

@@ -1,29 +1,24 @@
 #!/usr/bin/env python
 
-import argparse
-import cryptography
 import re
-import csv
 # from enum import Enum, auto
 
-from scapy.all import sniff, get_if_list, load_layer
+from scapy.all import get_if_list, load_layer
 from scapy.sendrecv import AsyncSniffer
-from scapy.layers import tls 
-
 from FlowSession import FlowSession
 
 SNIFFED_PACKET_COUNT = 0
 load_layer('tls')
 
-def _valid_file(file) -> str:
-    match = bool(re.match(r"\b(\S)+.csv\b", file) and \
+
+def _valid_file(file):
+    match = bool(re.match(r"\b(\S)+.csv\b", file) and
                  re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
 
-    while match == False:
-        file = input("That is not an acceptable file name,\
-please enter a different file name \n")
+    while not match:
+        file = input("That is not an acceptable file name, please enter a different file name \n")
 
-        match = bool(re.match(r"\b(\S)+.csv\b", file) and \
+        match = bool(re.match(r"\b(\S)+.csv\b", file) and
                      re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
     return file
 
@@ -40,7 +35,7 @@ def _on_off_line(choice, session):
                 print("The input must be integers only.")
 
     if choice == 1:
-        return AsyncSniffer(offline='test.pcap', filter='tcp port 443', prn=None, session=session)
+        return AsyncSniffer(offline='dump.pcap', filter='tcp port 443', prn=None, session=session)
     elif choice == 2:
         return _online(session)
 
@@ -71,8 +66,9 @@ def main():
 
     while True:
         try:
-            choice = int(input("Would you like to use a pcap \
-    file (1) or capture live traffic (2)?\n"))
+            choice = 1
+            #         choice = int(input("Would you like to use a pcap \
+            # file (1) or capture live traffic (2)?\n"))
 
             break
         except ValueError:
@@ -88,6 +84,7 @@ def main():
         sniffer.stop()
     finally:
         sniffer.join()
+
 
 if __name__ == '__main__':
     main()
