@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import re
 # from enum import Enum, auto
 
@@ -75,7 +74,6 @@ def main():
             print("That is not an integer.")
 
     print(choice)
-
     sniffer = _on_off_line(choice, FlowSession)
     sniffer.start()
     try:

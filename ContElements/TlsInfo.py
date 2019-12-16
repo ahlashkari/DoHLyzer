@@ -515,7 +515,7 @@ class TlsInfo:
         early_data = 0
         early_data_ticket = 0
         encrypt_then_mac = 0
-        heartbeat = 2
+        heartbeat = 0
         keyshare = 0
         keyshare_ch = 0
         master_secret = 0
