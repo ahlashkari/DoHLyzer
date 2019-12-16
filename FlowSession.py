@@ -23,7 +23,7 @@ class FlowSession(DefaultSession):
         self.flows = {}
         self.csv_line = 0
 
-        file = 'output2.csv'
+        file = 'output3.csv'
         output = open(file, 'w')
         self.csv_writer = csv.writer(output)
 

@@ -72,38 +72,6 @@ class TimeDiff:
 
         return mean
 
-    def _get_grand_total(self) -> float:
-        """Calculates grand total of time differences in a network flow.
-
-        Returns:
-            float: The grand total of time differences in a network flow
-
-        """
-
-        if TimeDiff.mean_count == 0:
-            TimeDiff.grand_total = self.get_mean() - self.get_mean()
-        else:
-            TimeDiff.grand_total += self.get_mean()
-
-        TimeDiff.mean_count += 1
-
-        return TimeDiff.grand_total
-
-    def get_grand_mean(self) -> float:
-        """Calculates the cummulative mean of time differences in a network flow.
-
-        Returns:
-            float: The grand mean of the time differences
-
-        """
-
-        if TimeDiff.mean_count > 1:
-            TimeDiff.grand_mean = self._get_grand_total() / (TimeDiff.mean_count - 1)
-        else:
-            TimeDiff.grand_mean = self._get_grand_total() / (TimeDiff.mean_count)
-
-        return TimeDiff.grand_mean
-
     def get_median(self) -> float:
         """Calculates the median of the list of time differences
 

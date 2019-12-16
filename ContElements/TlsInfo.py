@@ -436,11 +436,11 @@ class TlsInfo:
     def renegotiation(self):
         return self.func_dict.get('renegotiation')
 
-    def server_cipher_suit(self):
-        return self.func_dict.get('server_cipher_suit')
-
     def server_hello_msglen(self):
         return self.func_dict.get('server_hello_msglen')
+
+    def server_name(self):
+        return self.func_dict.get('server_name')
 
     def session_ticket(self):
         return self.func_dict.get('session_ticket')
@@ -502,7 +502,7 @@ class TlsInfo:
         client_hello_msglen = 0
         server_hello_msglen = 0
 
-        compr = 0
+        compr = []
         lifetime = 0
 
         alpn = 0
@@ -510,12 +510,12 @@ class TlsInfo:
         client_authz = 0
         client_certificate_type = 0
         client_certificate_url = 0
-        # cookie = 0
+        cookie = 0
         csr = 0
         early_data = 0
         early_data_ticket = 0
         encrypt_then_mac = 0
-        heartbeat = 0
+        heartbeat = 2
         keyshare = 0
         keyshare_ch = 0
         master_secret = 0
@@ -528,6 +528,7 @@ class TlsInfo:
         record_size_limit = 0
         renegotiation = 0
         server_certificate_type = 0
+        server_name = 0
         session_ticket = 0
         signature_algorithms = 0
         signature_algorithms_cert = 0
@@ -542,14 +543,16 @@ class TlsInfo:
         trusted_ca = 0
         user_mapping = 0
 
-        # Doing a bunch of loops is too inefficient
         for packet, _ in packets:
             if TLS in packet:
                 # 1 meaning it has been seen
 
                 if packet['TLS'].type == 22:
                     if TLSServerHello in packet:
-                        server_cipher_suit = CIPHER.get(packet[TLSServerHello].cipher)
+                        if packet[TLSServerHello].cipher is not None:
+                            server_cipher_suit = CIPHER.get(packet[TLSServerHello].cipher)
+                        else:
+                            server_cipher_suit = []
                         server_hello_msglen = packet[TLSServerHello].msglen
                         # if TLS_Ext_ServerCertType in packet:
                         #     server_certificate_type = 1
@@ -565,12 +568,14 @@ class TlsInfo:
                         #Accounting for NoneType errors
                         if packet[TLSClientHello].ciphers is not None:
                             cipher_list = [cipher for cipher in packet[TLSClientHello].ciphers if cipher is not None]
-                        client_cipher_suit = [cipher if CIPHER.get(cipher)
-                                            is None else CIPHER.get(cipher) if cipher is not None
-                                            else 0
-                                            for cipher in cipher_list
-                                            if (packet[TLSClientHello] is not None and
-                                            packet is not None)]
+                            client_cipher_suit = [cipher if CIPHER.get(cipher)
+                                is None else CIPHER.get(cipher) if cipher is not None
+                                else 0
+                                for cipher in cipher_list
+                                if (packet[TLSClientHello] is not None and
+                                packet is not None)]
+                        else:
+                            cipher_list = []
                         client_hello_msglen = packet[TLSClientHello].msglen
 
                         if TLS_Ext_ALPN in packet:
@@ -591,8 +596,8 @@ class TlsInfo:
                         if TLS_Ext_ClientCertURL in packet:
                             client_certificate_url = 1
 
-                        # if TLS_Ext_Cookie in packet:
-                        #     cookie = 1
+                        if TLS_Ext_Cookie in packet:
+                            cookie = 1
 
                         if TLS_Ext_CSR in packet:
                             csr = 1
@@ -642,6 +647,9 @@ class TlsInfo:
                         if TLS_Ext_RenegotiationInfo in packet:
                             renegotiation = 1
 
+                        if TLS_Ext_ServerName in packet:
+                            server_name = 1
+
                         if TLS_Ext_SignatureAlgorithms in packet:
                             signature_algorithms = 1
 
@@ -656,8 +664,11 @@ class TlsInfo:
 
                         if TLS_Ext_SupportedPointFormat in packet:
                             supported_point_format = 1
-                            compr = [EC_POINT.get(comp) for comp \
+                            if len(packet[TLS_Ext_SupportedPointFormat].ecpl) > 0:
+                                compr = [EC_POINT.get(comp) for comp \
                                      in packet[TLS_Ext_SupportedPointFormat].ecpl]
+                            else:
+                                compr = []
 
                         if TLS_Ext_SupportedVersions in packet:
                             supported_version = 1
@@ -694,6 +705,7 @@ class TlsInfo:
             'lifetime': lifetime,
 
             'alpn': alpn,  # application_layer_protocol_negotiation
+            'cookie' : cookie,
             'csr': csr,
             'client_authz': client_authz,
             'client_certificate_type': client_certificate_type,
@@ -713,6 +725,7 @@ class TlsInfo:
             'psk_key_exch': psk_key_exch,
             'record_size_limit': record_size_limit,
             'renegotiation': renegotiation,
+            'server_name' : server_name,
             'session_ticket': session_ticket,
             'signature_algorithms': signature_algorithms,
             'signature_algorithms_cert': signature_algorithms_cert,

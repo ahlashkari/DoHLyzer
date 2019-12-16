@@ -75,21 +75,6 @@ class PacketTime:
 
         return max(self._get_packet_times()) - min(self._get_packet_times())
 
-    def get_duration_total(self):
-        """Adds together all the duration values on a given run.
-
-        Returns:
-            The total Duration
-
-        """
-
-        if PacketTime.count == 1:
-            PacketTime.duration_total = 0
-        else:
-            PacketTime.duration_total += self.get_duration()
-
-        return PacketTime.duration_total
-
     def get_var(self):
         """Calculates the variation of packet times in a network flow.
 
@@ -120,36 +105,6 @@ class PacketTime:
             mean = numpy.mean(self._get_packet_times())
 
         return mean
-
-    def _get_grand_total(self):
-        """Calculates the overall total of packet times in a network flow.
-
-        Returns:
-            float: The grand total of packet times
-
-        """
-
-        if PacketTime.count == 1:
-            PacketTime.grand_total = 0
-        else:
-            PacketTime.grand_total += self.get_mean()
-
-        return PacketTime.grand_total
-
-    def get_grand_mean(self):
-        """Calculates the cummulative mean of packet times in a network flow.
-
-        Returns:
-            float: The grand mean of packet times
-
-
-        """
-        try:
-            PacketTime.grand_mean = self._get_grand_total() / (PacketTime.count - 1)
-        except DecimalException:
-            PacketTime.grand_mean = -1
-
-        return PacketTime.grand_mean
 
     def get_median(self):
         """Calculates the median of packet times in a network flow.

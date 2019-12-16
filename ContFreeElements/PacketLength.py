@@ -75,34 +75,6 @@ class PacketLength:
 
         return mean
 
-    def _get_grand_total(self) -> float:
-        """The cummulative total of the packet length means in a network flow.
-
-        Returns:
-            float: The cummulative total of packet length means.
-        """
-
-        if PacketLength.mean_count == 0:
-            PacketLength.grand_total = self.get_mean() - self.get_mean()
-        else:
-            PacketLength.grand_total += self.get_mean()
-
-        PacketLength.mean_count += 1
-
-        return PacketLength.grand_total
-
-    def get_grand_mean(self) -> float:
-        """The mean of means of packet lengths in a network flow.
-
-        Returns:
-            float: The grand mean of packet lengths.
-
-        """
-
-        PacketLength.grand_mean = self._get_grand_total() / (PacketLength.mean_count - 1)
-
-        return PacketLength.grand_mean
-
     def get_median(self) -> float:
         """The median of packet lengths in a network flow.
 

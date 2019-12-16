@@ -35,7 +35,7 @@ def _on_off_line(choice, session):
                 print("The input must be integers only.")
 
     if choice == 1:
-        return AsyncSniffer(offline='dump.pcap', filter='tcp port 443', prn=None, session=session)
+        return AsyncSniffer(offline='test.pcap', filter='tcp port 443', prn=None, session=session)
     elif choice == 2:
         return _online(session)
 

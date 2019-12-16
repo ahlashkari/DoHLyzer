@@ -35,19 +35,11 @@ class Barks:
 
     """
 
-    total_bytes_received = 0
-    total_bytes_sent = 0
-
-    total_forward_header_bytes = 0
-    total_reverse_header_bytes = 0
-
-    row = 0
     __slots__ = ['feature']
 
     def __init__(self, feature):
         self.feature = feature
-        Barks.row += 1
-
+        
     def direction_list(self) -> list:
         """Returns a list of the directions of the \
         first 50 packets in a flow.
@@ -56,10 +48,9 @@ class Barks:
             list with packet directions.
 
         """
-        direction_list = []
         index = 0
         feat = self.feature
-        [(i, direction.name) for (i, (packet, direction)) in enumerate(feat.packets) if i < 50]
+        direction_list = [(i, direction.name)[1] for (i, (packet, direction)) in enumerate(feat.packets) if i < 50]
         return direction_list
 
     def get_bytes_sent(self) -> int:
@@ -92,20 +83,6 @@ class Barks:
 
         return rate
 
-    # def get_total_bytes_sent(self) -> int:
-    #     """Calculates the cummalative total bytes sent.
-
-    #     Returns:
-    #         int: The total amount of bytes
-
-    #     """
-    #     if Barks.row == 1:
-    #         Barks.total_bytes_sent = 0
-    #     else:
-    #         Barks.total_bytes_sent += self.get_bytes_sent()
-
-    #     return Barks.total_bytes_sent
-
     def get_bytes_received(self) -> int:
         """Calculates the amount bytes received.
 
@@ -136,19 +113,6 @@ class Barks:
 
         return rate
 
-    # def get_total_bytes_received(self) -> int:
-    #     """Calculates the total bytes received in the sniffing session.
-
-    #     Returns:
-    #         int: The total amount of bytes
-
-    #     """
-    #     if Barks.row == 1:
-    #         Barks.total_bytes_received = 0
-    #     else:
-    #         Barks.total_bytes_received += self.get_bytes_received()
-
-    #     return Barks.total_bytes_received
 
     def get_forward_header_bytes(self) -> int:
         """Calculates the amount of header bytes \
@@ -188,21 +152,6 @@ class Barks:
 
         return rate
 
-    # def get_total_forward_bytes(self) -> int:
-    #     """Calculates the total bytes in the header going forward.
-
-    #     Returns:
-    #         int: The total amount of bytes
-
-    #     """
-
-    #     if Barks.row == 1:
-    #         Barks.total_forward_header_bytes = 0
-    #     else:
-    #         Barks.total_forward_header_bytes += self.get_forward_header_bytes()
-
-    #     return Barks.total_forward_header_bytes
-
     def get_reverse_header_bytes(self) -> int:
         """Calculates the amount of header bytes \
          in the header sent in the opposite direction as the flow.
@@ -223,19 +172,6 @@ class Barks:
         return sum(header_size(packet) for packet, direction
                    in packets if direction == PacketDirection.REVERSE)
 
-    # def get_total_reverse_bytes(self) -> int:
-    #     """Calculates the total reverse header bytes
-
-    #     Returns:
-    #         int: The total amount of bytes
-
-    #     """
-    #     if Barks.row == 1:
-    #         Barks.total_reverse_header_bytes = 0
-    #     else:
-    #         Barks.total_reverse_header_bytes += self.get_reverse_header_bytes()
-
-    #     return Barks.total_reverse_header_bytes
 
     def get_reverse_rate(self) -> int:
         """Calculates the rate of the bytes being going reverse
@@ -273,23 +209,6 @@ class Barks:
 
         return ratio
 
-    # def get_total_header_in_out_ratio(self) -> float:
-    #     """Calculates the ratio of foward traffic over reverse traffic.
-
-    #     Returns:
-    #         float: The ratio over reverse traffic.
-    #         If the reverse header bytes is 0 this returns -1 to avoid /
-    #         a possible division by 0.
-
-    #     """
-    #     reverse_header_bytes = Barks.total_reverse_header_bytes
-    #     forward_header_bytes = Barks.total_forward_header_bytes
-
-    #     ratio = -1
-    #     if reverse_header_bytes != 0:
-    #         ratio = forward_header_bytes / reverse_header_bytes
-
-    #     return ratio
 
     def get_initial_ttl(self) -> int:
         """Obtains the initial time-to-live value.
