@@ -10,7 +10,7 @@ from ContElements.Context.PacketDirection import PacketDirection
 
 
 # time difference between packets of foward and reverse flows
-class TimeDiff:
+class ResponseTime:
     """A summary of features based on the time difference \
        between an outgoing packet and the following response.
 
