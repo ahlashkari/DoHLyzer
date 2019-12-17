@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
+
 import cryptography
 
 # For type hinting and making things easier to handle
 from enum import Enum
+from optparse import OptionParser
 from typing import Any
 
 # Supressing warnings due to the dynamic nature of the program
@@ -121,11 +122,7 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
+
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -258,11 +255,7 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
+
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -380,11 +373,7 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
+
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -491,11 +480,7 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
+
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -617,11 +602,6 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -740,11 +720,7 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
+
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
@@ -867,11 +843,6 @@ class Flow:
                 'SupportedPointFormat' : tls.supported_point_format(),
                 'SupportedVersion' : tls.supported_version(),
                 'SupportedCh' : tls.supported_version_ch(),
-                # 'TicketEarlyDataInfo' : tls.ticket_early_data_info(),
-                # 'TLSAlert' : tls.tls_alert(),
-                # 'TruncatedHmac' : tls.truncated_hmac(),
-                # 'TrustedCA' : tls.trusted_ca(),
-                # 'UserMapping' : tls.user_mapping(),
 
                 # Information based on first 50 packets
                 'RelativeTimeList': packet_time.relative_time_list(),
