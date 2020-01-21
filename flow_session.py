@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 import csv
-from itertools import groupby
-import threading
-import time
-
 # internal imports
+import os
+
 from scapy.sessions import DefaultSession
 
-from Flow import Flow
-from ContElements.Context.PacketDirection import PacketDirection
 from ContElements.Context import PacketFlowKey
+from ContElements.Context.PacketDirection import PacketDirection
+from Flow import Flow
+from time_series.processor import Processor
 
 EXPIRED_UPDATE = 40
 
@@ -23,9 +22,9 @@ class FlowSession(DefaultSession):
         self.flows = {}
         self.csv_line = 0
 
-        file = 'output3.csv'
-        output = open(file, 'w')
-        self.csv_writer = csv.writer(output)
+        if self.output_mode == 'flow':
+            output = open(self.output_file, 'w')
+            self.csv_writer = csv.writer(output)
 
         self.packets_count = 0
 
@@ -34,7 +33,7 @@ class FlowSession(DefaultSession):
     def toPacketList(self):
         # Sniffer finished all the packets it needed to sniff.
         # It is not a good place for this, we need to somehow define a finish signal for AsyncSniffer
-        self.garbage_collect(None, self.csv_writer)
+        self.garbage_collect(None)
         return super(FlowSession, self).toPacketList()
 
     def on_packet_received(self, packet):
@@ -56,7 +55,7 @@ class FlowSession(DefaultSession):
             if flow is None:
                 # If no flow exists create a new flow
                 direction = PacketDirection.FORWARD
-                flow = Flow(packet, direction, None)
+                flow = Flow(packet, direction)
                 packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
                 self.flows[(packet_flow_key, count)] = flow
 
@@ -70,7 +69,7 @@ class FlowSession(DefaultSession):
                     flow = self.flows.get((packet_flow_key, count))
 
                     if flow is None:
-                        flow = Flow(packet, direction, None)
+                        flow = Flow(packet, direction)
                         self.flows[(packet_flow_key, count)] = flow
                         break
 
@@ -83,34 +82,45 @@ class FlowSession(DefaultSession):
                 flow = self.flows.get((packet_flow_key, count))
 
                 if flow is None:
-                    flow = Flow(packet, direction, None)
+                    flow = Flow(packet, direction)
                     self.flows[(packet_flow_key, count)] = flow
                     break
 
         flow.add_packet(packet, direction)
-        # process = threading.Thread(target = self.garbage_collect, \
-        # args = (packet.time, self.csv_writer))
-
-        # process.start()
-        # process.join()
 
         if self.packets_count % 10000 == 0:
-            self.garbage_collect(packet.time, self.csv_writer)
+            self.garbage_collect(packet.time)
 
     def get_flows(self) -> list:
         return self.flows.values()
 
-    def garbage_collect(self, latest_time, csv_writer) -> None:
+    def garbage_collect(self, latest_time) -> None:
         # TODO: Garbage Collection / Feature Extraction should have a separate thread
         print('Garbage Collection Began. Flows = {}'.format(len(self.flows)))
         keys = list(self.flows.keys())
         for k in keys:
             flow = self.flows.get(k)
-            data = flow.get_data()
-            if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
-                if self.csv_line == 0:
-                    csv_writer.writerow(data.keys())
-                csv_writer.writerow(data.values())
-                self.csv_line += 1
-                del self.flows[k]
+
+            if self.output_mode == 'flow':
+                if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
+                    data = flow.get_data()
+                    if self.csv_line == 0:
+                        self.csv_writer.writerow(data.keys())
+                    self.csv_writer.writerow(data.values())
+                    self.csv_line += 1
+                    del self.flows[k]
+            else:
+                if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
+                    output_dir = os.path.join(self.output_file, 'doh' if flow.is_doh() else 'ndoh')
+                    proc = Processor(flow)
+                    for s in proc.generate_segments():
+                        s.to_json_file(output_dir, 'data.json')  # Todo: change with output
+                    del self.flows[k]
         print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))
+
+
+def generate_session_class(output_mode, output_file):
+    return type('NewFlowSession', (FlowSession,), {
+        'output_mode': output_mode,
+        'output_file': output_file,
+    })

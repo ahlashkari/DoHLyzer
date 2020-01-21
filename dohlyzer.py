@@ -1,81 +1,47 @@
 #!/usr/bin/env python
-import re
-# from enum import Enum, auto
+import argparse
 
-from scapy.all import get_if_list, load_layer
+from scapy.all import load_layer
 from scapy.sendrecv import AsyncSniffer
-from FlowSession import FlowSession
 
-SNIFFED_PACKET_COUNT = 0
-load_layer('tls')
+from flow_session import generate_session_class
 
 
-def _valid_file(file):
-    match = bool(re.match(r"\b(\S)+.csv\b", file) and
-                 re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
+def create_sniffer(input_file, input_interface, output_mode, output_file):
+    assert (input_file is None) ^ (input_interface is None)
 
-    while not match:
-        file = input("That is not an acceptable file name, please enter a different file name \n")
+    NewFlowSession = generate_session_class(output_mode, output_file)
 
-        match = bool(re.match(r"\b(\S)+.csv\b", file) and
-                     re.match(r"\b[^/:*#?!=\"<>|.\'@$&`%{}]+.csv\b", file))
-    return file
-
-
-def _on_off_line(choice, session):
-    while choice != 1 and choice != 2:
-        print("Only an input of the number 1 or the number 2 is accepted")
-        while True:
-            try:
-                choice = input("Would you like to use a pcap file (1) or capture live traffic (2)?\n")
-                choice = int(choice)
-                break
-            except ValueError:
-                print("The input must be integers only.")
-
-    if choice == 1:
-        return AsyncSniffer(offline='test.pcap', filter='tcp port 443', prn=None, session=session)
-    elif choice == 2:
-        return _online(session)
-
-
-def _online(session):
-    options = get_if_list()
-    print("Please choose which interface you wish to analyze: ")
-    for i, interface in enumerate(options):
-        print("({}) {}".format(i + 1, interface))
-    while True:
-        try:
-            user_entry = int(input()) - 1
-            user_choice = options[user_entry]
-            break
-        except ValueError:
-            print("Please enter a number only")
-        except IndexError:
-            print("Please enter a number that is contained within the list only.")
-
-    print("Capturing packets from `{}` interface...".format(user_choice))
-
-    return AsyncSniffer(iface=user_choice, filter='tcp port 443', count=SNIFFED_PACKET_COUNT, prn=None, session=session)
+    if input_file is not None:
+        return AsyncSniffer(offline=input_file, filter='tcp port 443', prn=None, session=NewFlowSession)
+    else:
+        return AsyncSniffer(iface=input_interface, filter='tcp port 443', prn=None,
+                            session=NewFlowSession)
 
 
 def main():
-    # file = input("Please enter a .csv file that you would like to save the results to.\n")
-    # file = _valid_file(file)
+    parser = argparse.ArgumentParser()
 
-    while True:
-        try:
-            choice = 1
-            #         choice = int(input("Would you like to use a pcap \
-            # file (1) or capture live traffic (2)?\n"))
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument('-n', '--online', '--interface', action='store', dest='input_interface',
+                             help='capture online data from INPUT_INTERFACE')
+    input_group.add_argument('-f', '--offline', '--file', action='store', dest='input_file',
+                             help='capture offline data from INPUT_FILE')
 
-            break
-        except ValueError:
-            print("That is not an integer.")
+    output_group = parser.add_mutually_exclusive_group(required=True)
+    output_group.add_argument('-c', '--csv', '--flow', action='store_const', const='flow', dest='output_mode',
+                              help='output flows as csv')
+    output_group.add_argument('-s', '--json', '--segment', action='store_const', const='segment', dest='output_mode',
+                              help='output flow segments as json')
 
-    print(choice)
-    sniffer = _on_off_line(choice, FlowSession)
+    parser.add_argument('output', help='output file name (in csv mode) or directory (in json mode)')
+    args = parser.parse_args()
+
+    load_layer('tls')
+
+    sniffer = create_sniffer(args.input_file, args.input_interface, args.output_mode, args.output)
     sniffer.start()
+
     try:
         sniffer.join()
     except KeyboardInterrupt as e:
