@@ -3,7 +3,7 @@ from scapy.layers.tls.handshake import TLSServerHello, TLS13ServerHello
 from scapy.layers.tls.record import TLS, TLSApplicationData
 
 import utils
-from time_series.flow_segment import Clump, FlowSegment
+from time_series.flow_clumps import Clump, FlowClumps
 
 
 class Processor:
@@ -47,9 +47,5 @@ class Processor:
         if current_clump is not None:
             yield current_clump
 
-    def _create_segment(self, clumps):
-        return FlowSegment(flow=self.flow, clumps=clumps)
-
-    def generate_segments(self, max_segments=0):
-        groups = utils.grouper(self._clumps(), self._segment_size, max_segments, fillvalue=Clump(None))
-        return map(self._create_segment, groups)
+    def create_flow_clumps(self):
+        return FlowClumps(flow=self.flow, clumps=self._clumps())

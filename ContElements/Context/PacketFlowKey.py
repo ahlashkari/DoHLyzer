@@ -23,9 +23,9 @@ def get_packet_flow_key(packet, direction) -> tuple:
         TCP flags.
 
     """
-    if packet.proto == 6:
+    if 'TCP' in packet:
         protocol = 'TCP'
-    elif packet.proto == 17:
+    elif 'UDP' in  packet:
         protocol = 'UDP'
     else:
         raise Exception('Only TCP protocols are supported.')

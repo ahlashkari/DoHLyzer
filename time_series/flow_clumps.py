@@ -35,7 +35,7 @@ class Clump:
         return self.latest_timestamp - self.first_timestamp
 
 
-class FlowSegment:
+class FlowClumps:
     """Represents a segment of a Flow"""
 
     def __init__(self, flow, clumps):
@@ -43,39 +43,33 @@ class FlowSegment:
         self.clumps = clumps
 
     def output(self):
-        duration = []
-        size = []
-        packets = []
-        direction = []
+        results = []
 
+        count = 0
         for c in self.clumps:
-            duration.append(float(c.duration()))
-            size.append(c.size)
-            packets.append(c.packets)
-            if c.direction is not None:
-                direction.append(1 if c.direction == PacketDirection.FORWARD else -1)
-            else:
-                direction.append(0)
+            count += 1
+            results.append(
+                [float(c.duration()), c.size, c.packets, 1 if c.direction == PacketDirection.FORWARD else -1])
 
-        return {
-            'duration': duration,
-            'size': size,
-            'packets': packets,
-            'direction': direction,
-        }
+        return results, count
 
     def to_json_file(self, directory, preferred_name=None):
         preferred_name = preferred_name or '{}_{}-{}_{}.json'.format(self.flow.src_ip, self.flow.src_port,
                                                                      self.flow.dest_ip, self.flow.dest_port)
         file_path = os.path.join(directory, preferred_name)
 
+        output, count = self.output()
+
+        if count < 5:
+            return
+
         if os.path.exists(file_path):
             f = open(file_path, 'r')
             contents = json.load(f)
-            contents.append(self.output())
+            contents.append(output)
             f.close()
         else:
-            contents = [self.output()]
+            contents = [output]
 
         f = open(file_path, 'w')
 
