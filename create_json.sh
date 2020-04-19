@@ -1,6 +1,9 @@
 #!/bin/bash
 
-for f in $(find /home/Mohammad/Dataset/LastVersion/Raw/Chrome/ -name '*.pcap');
+in_path=$1
+out_path=$2
+
+for f in $(find "$in_path" -name '*.pcap');
 do
-    ./dohlyzer.py -f "$f" -s ./layer2/chrome/
+    echo "./dohlyzer.py -f \"$f\" -s $out_path"
 done
