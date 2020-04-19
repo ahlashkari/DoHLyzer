@@ -35,7 +35,7 @@ class Clump:
         return self.latest_timestamp - self.first_timestamp
 
 
-class FlowClumps:
+class FlowClumpsContainer:
     """Represents a segment of a Flow"""
 
     def __init__(self, flow, clumps):
@@ -45,17 +45,27 @@ class FlowClumps:
     def output(self):
         results = []
 
+        latest_clump_end_timestamp = None
+
         count = 0
         for c in self.clumps:
+            if latest_clump_end_timestamp is None:
+                latest_clump_end_timestamp = c.first_timestamp
             count += 1
-            results.append(
-                [float(c.duration()), c.size, c.packets, 1 if c.direction == PacketDirection.FORWARD else -1])
+            results.append([
+                float(c.first_timestamp - latest_clump_end_timestamp),  # inter-arrival duration
+                float(c.duration()),
+                c.size,
+                c.packets,
+                1 if c.direction == PacketDirection.FORWARD else -1
+            ])
+            latest_clump_end_timestamp = c.latest_timestamp
 
         return results, count
 
-    def to_json_file(self, directory, preferred_name=None):
-        preferred_name = preferred_name or '{}_{}-{}_{}.json'.format(self.flow.src_ip, self.flow.src_port,
-                                                                     self.flow.dest_ip, self.flow.dest_port)
+    def to_json_file(self, directory):
+        preferred_name = '{}_{}-{}_{}.json'.format(self.flow.src_ip, self.flow.src_port,
+                                                   self.flow.dest_ip, self.flow.dest_port)
         file_path = os.path.join(directory, preferred_name)
 
         output, count = self.output()

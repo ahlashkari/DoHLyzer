@@ -2,8 +2,10 @@
 import csv
 # internal imports
 import os
+from collections import defaultdict
 
 from scapy.sessions import DefaultSession
+from scapy.layers.tls.record import TLS, TLSApplicationData
 
 from ContElements.Context import PacketFlowKey
 from ContElements.Context.PacketDirection import PacketDirection
@@ -28,6 +30,8 @@ class FlowSession(DefaultSession):
 
         self.packets_count = 0
 
+        self.clumped_flows_per_label = defaultdict(list)
+
         super(FlowSession, self).__init__(None, True, *args, **kwargs)
 
     def toPacketList(self):
@@ -37,9 +41,21 @@ class FlowSession(DefaultSession):
         return super(FlowSession, self).toPacketList()
 
     def on_packet_received(self, packet):
-        self.packets_count += 1
         count = 0
         direction = PacketDirection.FORWARD
+
+        if self.output_mode != 'flow':
+            if TLS not in packet:
+                return
+
+            if TLSApplicationData not in packet:
+                return
+
+            if len(packet[TLSApplicationData]) < 40:
+                # PING frame (len = 34) or other useless frames
+                return
+
+        self.packets_count += 1
 
         # Creates a key variable to check
         packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
@@ -88,7 +104,8 @@ class FlowSession(DefaultSession):
 
         flow.add_packet(packet, direction)
 
-        if self.packets_count % 10000 == 0:
+        if self.packets_count % 10000 == 0 or (flow.duration > 120 and self.output_mode == 'flow'):
+            print('Packet count: {}'.format(self.packets_count))
             self.garbage_collect(packet.time)
 
     def get_flows(self) -> list:
@@ -102,7 +119,7 @@ class FlowSession(DefaultSession):
             flow = self.flows.get(k)
 
             if self.output_mode == 'flow':
-                if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
+                if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE or flow.duration > 90:
                     data = flow.get_data()
                     if self.csv_line == 0:
                         self.csv_writer.writerow(data.keys())
@@ -112,9 +129,10 @@ class FlowSession(DefaultSession):
             else:
                 if latest_time is None or latest_time - flow.latest_timestamp > EXPIRED_UPDATE:
                     output_dir = os.path.join(self.output_file, 'doh' if flow.is_doh() else 'ndoh')
+                    os.makedirs(output_dir, exist_ok=True)
                     proc = Processor(flow)
-                    for s in proc.generate_segments():
-                        s.to_json_file(output_dir, 'data.json')  # Todo: change with output
+                    flow_clumps = proc.create_flow_clumps_container()
+                    flow_clumps.to_json_file(output_dir)
                     del self.flows[k]
         print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))
 

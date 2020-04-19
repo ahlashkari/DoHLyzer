@@ -37,6 +37,7 @@ class Flow:
 
         self.packets = []
         self.latest_timestamp = 0
+        self.start_timestamp = 0
 
     def get_data(self) -> dict:
         """This method obtains the values of the features extracted from each flow.
@@ -52,12 +53,12 @@ class Flow:
         """
 
         barks = Barks(self)
-        flags = Flags(self)
-        ip = IpBased(self)
+        # flags = Flags(self)
+        # ip = IpBased(self)
         packet_length = PacketLength(self)
         packet_time = PacketTime(self)
         response = ResponseTime(self)
-        tls = TlsInfo(self)
+        # tls = TlsInfo(self)
 
         data = {
             # Basic IP information
@@ -196,5 +197,12 @@ class Flow:
 
         self.latest_timestamp = max([packet.time, self.latest_timestamp])
 
+        if self.start_timestamp == 0:
+            self.start_timestamp = packet.time
+
     def is_doh(self) -> bool:
         return self.src_ip in constants.DOH_IPS or self.dest_ip in constants.DOH_IPS
+
+    @property
+    def duration(self):
+        return self.latest_timestamp - self.start_timestamp
