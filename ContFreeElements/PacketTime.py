@@ -28,6 +28,7 @@ class PacketTime:
     def __init__(self, flow):
         self.flow = flow
         PacketTime.count += 1
+        self.packet_times = None
 
     def _get_packet_times(self):
         """Gets a list of the times of the packets on a flow
@@ -36,7 +37,10 @@ class PacketTime:
             A list of the packet times.
 
         """
-        packet_times = [self.flow.packet.time for self.flow.packet, _ in self.flow.packets]
+        if self.packet_times is not None:
+            return self.packet_times
+        first_packet_time = self.flow.packets[0][0].time
+        packet_times = [packet.time - first_packet_time for packet, _ in self.flow.packets]
         return packet_times
 
     def relative_time_list(self):
@@ -61,7 +65,7 @@ class PacketTime:
             String of Date and time.
 
         """
-        time = self._get_packet_times()[0]
+        time = self.flow.packets[0][0].time
         date_time = datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
         return date_time
 
