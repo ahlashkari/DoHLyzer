@@ -6,7 +6,7 @@ import numpy
 from scipy import stats as stat
 
 # internal imports
-from ContElements.Context.PacketDirection import PacketDirection
+from meter.ContElements.Context import PacketDirection
 
 
 # time difference between packets of foward and reverse flows

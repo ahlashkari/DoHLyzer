@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-from ContElements.Context.PacketDirection import PacketDirection
+from meter.ContElements.Context import PacketDirection
 
 
 def get_packet_flow_key(packet, direction) -> tuple:

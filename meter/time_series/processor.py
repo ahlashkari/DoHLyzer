@@ -1,6 +1,6 @@
 from scapy.layers.tls.record import TLS, TLSApplicationData
 
-from time_series.flow_clumps import Clump, FlowClumpsContainer
+from meter.time_series.flow_clumps import Clump, FlowClumpsContainer
 
 
 class Processor:

@@ -10,14 +10,14 @@ from scapy.layers.inet import IP, TCP
 from scapy.layers.l2 import Ether
 
 # internal imports
-from ContElements.Context.PacketDirection import PacketDirection
+from meter.ContElements.Context import PacketDirection
 
 # modifying the path to import a sibling
 # by going up to the parent directory
 sys.path.append(os.path.realpath('..'))
 
 # noinspection PyUnresolvedReferences
-from ContFreeElements.PacketTime import PacketTime
+from meter.ContFreeElements import PacketTime
 
 
 # Barks like a dog, bytes like a dog.

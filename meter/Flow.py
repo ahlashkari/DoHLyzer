@@ -8,15 +8,12 @@ from enum import Enum
 from typing import Any
 
 # internal imports
-import constants
-from ContElements.Barks import Barks
-from ContElements.Context import PacketFlowKey
-from ContElements.ResponseTime import ResponseTime
-from ContElements.TlsInfo import TlsInfo
-from ContFreeElements.Flags import Flags
-from ContFreeElements.IpBased import IpBased
-from ContFreeElements.PacketLength import PacketLength
-from ContFreeElements.PacketTime import PacketTime
+from meter import constants
+from meter.ContElements.Barks import Barks
+from meter.ContElements.Context import PacketFlowKey
+from meter.ContElements.ResponseTime import ResponseTime
+from meter.ContFreeElements import PacketLength
+from meter.ContFreeElements import PacketTime
 
 warnings.filterwarnings("ignore")
 

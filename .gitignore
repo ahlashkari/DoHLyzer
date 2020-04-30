@@ -1,5 +1,6 @@
 Archive/
 __pycache__/
+venv/
 *.csv
 *.csv#
 *.ods

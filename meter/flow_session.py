@@ -7,10 +7,10 @@ from collections import defaultdict
 from scapy.sessions import DefaultSession
 from scapy.layers.tls.record import TLS, TLSApplicationData
 
-from ContElements.Context import PacketFlowKey
-from ContElements.Context.PacketDirection import PacketDirection
-from Flow import Flow
-from time_series.processor import Processor
+from meter.ContElements.Context import PacketFlowKey
+from meter.ContElements.Context import PacketDirection
+from meter.Flow import Flow
+from meter.time_series.processor import Processor
 
 EXPIRED_UPDATE = 40
 
