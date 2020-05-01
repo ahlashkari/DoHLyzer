@@ -1,24 +1,20 @@
-#!/usr/bin/env python
 import csv
-# internal imports
 import os
 from collections import defaultdict
 
-from scapy.sessions import DefaultSession
 from scapy.layers.tls.record import TLS, TLSApplicationData
+from scapy.sessions import DefaultSession
 
-from meter.ContElements.Context import PacketFlowKey
-from meter.ContElements.Context import PacketDirection
-from meter.Flow import Flow
+from meter.features.context.packet_direction import PacketDirection
+from meter.features.context.packet_flow_key import get_packet_flow_key
+from meter.flow import Flow
 from meter.time_series.processor import Processor
 
 EXPIRED_UPDATE = 40
 
 
 class FlowSession(DefaultSession):
-    """Creates a list of network flows.
-
-    """
+    """Creates a list of network flows."""
 
     def __init__(self, *args, **kwargs):
         self.flows = {}
@@ -58,21 +54,21 @@ class FlowSession(DefaultSession):
         self.packets_count += 1
 
         # Creates a key variable to check
-        packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
+        packet_flow_key = get_packet_flow_key(packet, direction)
         flow = self.flows.get((packet_flow_key, count))
 
         # If there is no forward flow with a count of 0
         if flow is None:
             # There might be one of it in reverse
             direction = PacketDirection.REVERSE
-            packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
+            packet_flow_key = get_packet_flow_key(packet, direction)
             flow = self.flows.get((packet_flow_key, count))
 
             if flow is None:
                 # If no flow exists create a new flow
                 direction = PacketDirection.FORWARD
                 flow = Flow(packet, direction)
-                packet_flow_key = PacketFlowKey.get_packet_flow_key(packet, direction)
+                packet_flow_key = get_packet_flow_key(packet, direction)
                 self.flows[(packet_flow_key, count)] = flow
 
             elif (packet.time - flow.latest_timestamp) > EXPIRED_UPDATE:

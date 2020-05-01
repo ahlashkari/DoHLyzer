@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-
-# for type hinting
-from typing import List
-
-# For math stuff
 import numpy
 from scipy import stats as stat
 
@@ -29,8 +23,6 @@ class PacketLength:
             packet_lengths (List[int]):
 
         """
-        # packet_lengths = []
-        # packet_lengths.append(len(packet))
 
         return [len(packet) for packet, _ in self.feature.packets]
 
@@ -42,7 +34,6 @@ class PacketLength:
 
         """
         return self.get_packet_length()[:50]
-
 
     def get_var(self) -> float:
         """The variation of packet lengths in a network Feature.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import argparse
 
 from scapy.all import load_layer
@@ -31,10 +32,10 @@ def main():
     output_group = parser.add_mutually_exclusive_group(required=True)
     output_group.add_argument('-c', '--csv', '--flow', action='store_const', const='flow', dest='output_mode',
                               help='output flows as csv')
-    output_group.add_argument('-s', '--json', '--segment', action='store_const', const='segment', dest='output_mode',
+    output_group.add_argument('-s', '--json', '--sequence', action='store_const', const='sequence', dest='output_mode',
                               help='output flow segments as json')
 
-    parser.add_argument('output', help='output file name (in csv mode) or directory (in json mode)')
+    parser.add_argument('output', help='output file name (in flow mode) or directory (in sequence mode)')
     args = parser.parse_args()
 
     load_layer('tls')

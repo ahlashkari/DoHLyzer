@@ -1,29 +1,12 @@
-#!/usr/bin/env python
-
-# for type hinting
-from typing import List
-
-from decimal import DecimalException
 from datetime import datetime
 
-# For math stuff
 import numpy
 from scipy import stats as stat
 
 
 class PacketTime:
-    """This class extracts features related to the Packet Times.
-
-    Attributes:
-        count (int): The row number.
-        count (int): The number of means.
-        grand_total(float): The cummulative total of the means.
-        duration_total(float): The cummulative total of the durations.
-
-    """
+    """This class extracts features related to the Packet Times."""
     count = 0
-    grand_total = 0
-    duration_total = 0
 
     def __init__(self, flow):
         self.flow = flow

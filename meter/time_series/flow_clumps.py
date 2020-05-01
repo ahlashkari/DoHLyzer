@@ -4,7 +4,7 @@ import os
 from scapy.layers.tls.record import TLSApplicationData
 
 from meter import constants
-from meter.ContElements.Context import PacketDirection
+from meter.features.context.packet_direction import PacketDirection
 
 
 class Clump:
@@ -36,7 +36,7 @@ class Clump:
 
 
 class FlowClumpsContainer:
-    """Represents a segment of a Flow"""
+    """Represents a sequence of clumps in a Flow"""
 
     def __init__(self, flow, clumps):
         self.flow = flow

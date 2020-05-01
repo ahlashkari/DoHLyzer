@@ -1,29 +1,13 @@
-#!/usr/bin/env python
-
-
-# For math stuff
 import numpy
 from scipy import stats as stat
 
-# internal imports
-from meter.ContElements.Context import PacketDirection
+from meter.features.context.packet_direction import PacketDirection
 
 
-# time difference between packets of foward and reverse flows
 class ResponseTime:
     """A summary of features based on the time difference \
        between an outgoing packet and the following response.
-
-    Attributes:
-        mean_count (int): The number of means.
-        grand_total (float): The cummulation of means.
-
-
     """
-
-    mean_count = 0
-    grand_total = 0
-    __slots__ = ['feature']
 
     def __init__(self, feature):
         self.feature = feature
