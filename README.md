@@ -36,7 +36,7 @@ The project is not currently in development but any contribution is welcome in f
 
 ## Project Team members
 
-* [**Arash Habibi Lashkari:**](https://www.cs.unb.ca/~alashkar/) Project Leader
+* [**Arash Habibi Lashkari:**](https://www.cs.unb.ca/~alashkar/) Founder and Project Leader
 * [**Mohammadreza MontazeriShatoori:**](https://github.com/mr-montazeri) Research and Development
 * [**Gurdip Kaur:**](https://www.linkedin.com/in/gurdip-kaur-738062164/) Research
 * [**Logan Davidson:**](https://github.com/ladavids) Development
