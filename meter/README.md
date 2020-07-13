@@ -1,6 +1,5 @@
 # DoHMeter
-This module can read network packet captures and aggregate them into traffic flows. Furthermore, based on the requested
-mode, it extracts statistical or time-series features from the flows.
+This module can read the captured network packets and aggregate them into traffic flows. Furthermore, based on the requested mode, it extracts statistical or time-series features from the flows.
  features
  
 ## Usage
