@@ -11,8 +11,8 @@ This project has been made possible through funding from Canadian Internet Regis
 DoHlyzer currently consists of several independent modules, each carrying some of the functionality needed to analyze
 the data for DoH flows.
 
-### Meter
-Meter module is responsible for:
+### DoHMeter
+DoHMeter module is responsible for:
 
 1. Capturing HTTPS packets from network interfaces or reading input PCAP files
 2. Grouping packets into flows by their source and destination addresses and ports
