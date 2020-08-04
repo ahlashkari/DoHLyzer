@@ -21,7 +21,11 @@ DoHMeter module is responsible for:
 ### Analyzer
 This module can be used to create the proposed DNN models and benchmark them against the aggregated clumps file that can be created by the Meter module.
 
-### Prerequisites
+
+### Visualizer
+This module can be used to visualize the clumps files created by the Meter module.
+
+## Prerequisites
 
 Python packages needed for running DoHlyzer are listed in `requirements.txt` file. You can install them 
 (preferably in virtualenv) by:
