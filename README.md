@@ -18,6 +18,9 @@ DoHMeter module is responsible for:
 2. Grouping packets into flows by their source and destination addresses and ports
 3. Extracting features for traffic analysis, including statistical and time-series features  
 
+### Analyzer
+This module can be used to create the proposed DNN models and benchmark them against the aggregated clumps file that can be created by the Meter module.
+
 ### Prerequisites
 
 Python packages needed for running DoHlyzer are listed in `requirements.txt` file. You can install them 
