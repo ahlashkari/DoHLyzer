@@ -4,7 +4,7 @@ a focus on detecting and characterizing DoH (DNS-over-HTTPS) traffic.
 
 ## Acknowledgement
 
-This project has been made possible through funding from Canadian Internet Registration Authority (CIRA).
+This project has been made possible through funding from the Canadian Internet Registration Authority (CIRA) fron July 2019 to Jyly 2020.
 
 ## Modules
 
