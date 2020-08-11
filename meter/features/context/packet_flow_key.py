@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-from meter.features.context import packet_direction
+from meter.features.context.packet_direction import PacketDirection
 
 
 def get_packet_flow_key(packet, direction) -> tuple:
@@ -30,7 +30,7 @@ def get_packet_flow_key(packet, direction) -> tuple:
     else:
         raise Exception('Only TCP protocols are supported.')
 
-    if direction == packet_direction.FORWARD:
+    if direction == PacketDirection.FORWARD:
         dest_ip = packet['IP'].dst
         src_ip = packet['IP'].src
         src_port = packet[protocol].sport

@@ -63,7 +63,7 @@ class FlowClumpsContainer:
 
         return results, count
 
-    def to_json_file(self, directory):
+    def to_json_dir(self, directory):
         preferred_name = '{}_{}-{}_{}.json'.format(self.flow.src_ip, self.flow.src_port,
                                                    self.flow.dest_ip, self.flow.dest_port)
         file_path = os.path.join(directory, preferred_name)
@@ -82,6 +82,16 @@ class FlowClumpsContainer:
             contents = [output]
 
         f = open(file_path, 'w')
+
+        json.dump(contents, f, indent=2)
+        f.close()
+
+    def to_json_single(self, path):
+        output, count = self.output()
+
+        contents = [output]
+
+        f = open(path, 'w')
 
         json.dump(contents, f, indent=2)
         f.close()

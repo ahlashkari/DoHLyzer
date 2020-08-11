@@ -128,7 +128,7 @@ class FlowSession(DefaultSession):
                     os.makedirs(output_dir, exist_ok=True)
                     proc = Processor(flow)
                     flow_clumps = proc.create_flow_clumps_container()
-                    flow_clumps.to_json_file(output_dir)
+                    flow_clumps.to_json_dir(output_dir)
                     del self.flows[k]
         print('Garbage Collection Finished. Flows = {}'.format(len(self.flows)))
 
