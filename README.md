@@ -52,6 +52,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For citation in your works and also understanding DoHLyzer completely, you can find below published paper:
 
 "Detection of DoH Tunnels using Time-series Classification of Encrypted Traffic", Mohammadreza MontazeriShatoori, Logan Davidson, Gurdip Kaur and Arash Habibi Lashkari, The 5th Cyber Science and Technology Congress (2020) (CyberSciTech 2020), Vancouver, Canada, August 2020
+```
+@INPROCEEDINGS{9251211,
+  author={MontazeriShatoori, Mohammadreza and Davidson, Logan and Kaur, Gurdip and Habibi Lashkari, Arash},
+  booktitle={2020 IEEE Intl Conf on Dependable, Autonomic and Secure Computing, Intl Conf on Pervasive Intelligence and Computing, Intl Conf on Cloud and Big Data Computing, Intl Conf on Cyber Science and Technology Congress (DASC/PiCom/CBDCom/CyberSciTech)}, 
+  title={Detection of DoH Tunnels using Time-series Classification of Encrypted Traffic}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={63-70},
+  doi={10.1109/DASC-PICom-CBDCom-CyberSciTech49142.2020.00026}}
+  ```
 
 ## Project Team members
 
